@@ -63,7 +63,6 @@ package qrpg.display
 		/**
 		 * 加载完成的时候。
 		 * @param evt
-		 * 
 		 */		
 		override protected function onComplete(evt:Event):void
 		{

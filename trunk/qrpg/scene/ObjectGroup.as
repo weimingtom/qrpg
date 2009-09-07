@@ -11,8 +11,7 @@ package qrpg.scene
 	import flash.geom.Rectangle;
 	
 	import qrpg.display.ISceneAddable;
-	
-	import util.HashMap;
+	import qrpg.util.HashMap;
 	
 	/**
 	 * 有组织的一群物体。

@@ -47,14 +47,13 @@ package qrpg.core
 	 */
 	public class BmpObject extends EventDispatcher implements ISceneAddable
 	{
-		private var _actions:Actions;
-		protected var _bmpData:BitmapData;
-		protected var _source:DisplayObject;
+		private var _actions:Actions;					//物体动作集。
+		protected var _bmpData:BitmapData;	//物体显示可能用的图片。
+		protected var _source:DisplayObject;	//物体显示可能用的显示对象。
+		protected var _url:URLRequest;				//物体的图片或者显示对象可能的加载路径。
 		
-		protected var _url:URLRequest;
-		
-		protected var _isUpdate:Boolean;
-		protected var _isLoaded:Boolean;
+		protected var _isUpdate:Boolean;			//是否需要更新。
+		protected var _isLoaded:Boolean;			//是否已经加载。
 		
 		/**
 		 * 显示物体的基类。
@@ -134,7 +133,9 @@ package qrpg.core
 		}
 		
 		/**
-		 * 是否已经更新。
+		 * 是否已经更新。<br/>
+		 * 注意：该属性是检查从上回一检查该属性到这回检查为止是否有更新。<br/>
+		 * 所以如果连联调用两次该属性，第二次的结果一定会是false。
 		 */		
 		public function get isUpdate():Boolean
 		{
@@ -208,7 +209,7 @@ package qrpg.core
 			if ( cut )
 			{
 				var cutData:BitmapData = new BitmapData(displayRect.width, displayRect.height, true, 0);
-				cutData.copyPixels(bmpData, displayRect, new Point);
+				cutData.copyPixels(bmpData, displayRect, new Point());
 				return cutData;
 			}
 			return bmpData;

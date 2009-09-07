@@ -92,6 +92,11 @@ package qrpg.action
 			return _frames.length;
 		}
 		
+		/**
+		 * 得到指定位置的帧。
+		 * @param index 指定的位置。
+		 * @return 指定的帧。
+		 */		
 		public function getFrameAt(index:int):Frame
 		{
 			if ( index<0 || index>=length )

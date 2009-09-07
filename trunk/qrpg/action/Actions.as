@@ -13,8 +13,7 @@ package qrpg.action
 	
 	import qrpg.event.ActionEvent;
 	import qrpg.event.GameEvent;
-	
-	import util.HashMap;
+	import qrpg.util.HashMap;
 	
 	/**
 	 * 动作改变时触发。
@@ -50,9 +49,9 @@ package qrpg.action
 		private var acts:HashMap;			//存放动作集。
 		private var _defaultAct:Act;		//默认动作。
 		private var _currentAct:Act;		//当前动作。
-		private var _lastAct:Act;			//最后一个动作。
-		private var _pointer:int;			//动作指针。
-		private var _runTime:Boolean;		//是否是播放时间。
+		private var _lastAct:Act;				//最后一个动作。
+		private var _pointer:int;				//动作指针。
+		private var _runTime:Boolean;	//是否是播放时间。
 		private var _isPlaying:Boolean;	//是否正在播放。
 		
 		/**
@@ -145,15 +144,17 @@ package qrpg.action
 		 */
 		public function addAct(act:Act, name:String=null): void
 		{
-			if ( name!=null )
+			if ( name==null )
 			{
 				acts.put(act.name, act);
 			}
 			else
 			{
 				act.name = name;
-				acts.put(name, act);
+				acts.put(act.name, act);
 			}
+			trace(currentAct)
+			if ( !currentAct ) currentAct = act;
 		}
 	
 		/**

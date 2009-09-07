@@ -10,6 +10,9 @@
 
 package qrpg.display
 {
+	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
+
 	/**
 	 * @author 陈策
 	 * @version 1.0
@@ -22,12 +25,12 @@ package qrpg.display
 	     * 
 	     * @param rect    要显示的图片区域。如果为null，则按默认的显示区域显示。
 	     */
-	    public function displayData(rect:Rectangle): BitmapData;
+	    function displayData(rect:Rectangle): BitmapData;
 
 	    /**
 	     * 代表显示区域的矩形。
 	     */
-	    public function displayRect(): Rectangle;
+	    function displayRect(): Rectangle;
 
 	}//end IBmpObject
 

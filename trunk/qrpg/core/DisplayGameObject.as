@@ -6,8 +6,6 @@
 //  Original author: 陈策
 ///////////////////////////////////////////////////////////
 
-
-
 package qrpg.core
 {
 	import flash.display.Sprite;
@@ -26,7 +24,11 @@ package qrpg.core
 		 * @param priority 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。
 		 * @param useWeakReference 确定对侦听器的引用是强引用，还是弱引用。
 		 */
-		override public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=true):void
+		override public function addEventListener(type:String,
+																				 listener:Function,
+																				 useCapture:Boolean=false, 
+																				 priority:int=0, 
+																				 useWeakReference:Boolean=true):void
 		{
 			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
