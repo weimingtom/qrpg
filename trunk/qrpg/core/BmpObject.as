@@ -149,7 +149,7 @@ package qrpg.core
 		 */		
 		public function get isLoaded():Boolean
 		{
-			return false;
+			return _isLoaded;
 		}
 	
 		/**
@@ -158,6 +158,17 @@ package qrpg.core
 		public function get displayRect():Rectangle
 		{
 			return _actions.currentFrame.rect;
+		}
+		
+		/**
+		 * 显示的中心。
+		 */		
+		public function get displayPoint():Point
+		{
+			var p:Point = new Point();
+			p.x = -actions.currentFrame.center.x;
+			p.y = -actions.currentFrame.center.y;
+			return p;
 		}
 		
 		/**
