@@ -8,8 +8,8 @@
 
 package qrpg.action
 {
+	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	
 	import qrpg.event.ActionEvent;
 	import qrpg.event.GameEvent;
@@ -39,7 +39,7 @@ package qrpg.action
 	 * @version 3.0
 	 * @created 12-六月-2009 22:54:20
 	 */
-	public class Actions extends EventDispatcher
+	public class Actions extends Sprite
 	{
 		/**
 		 * 是否为隔帧动作。默认为隔帧动作。非隔帧动作即每帧动作，会让动作更流畅，但需要的图片也越多。
@@ -136,6 +136,23 @@ package qrpg.action
 		{
 			return _isPlaying;
 		}
+		
+		/**
+		 * 通过XML生成动作集。
+		 * @param xml 生成动作集的XML。
+		 * @return 动作集。
+		 */		
+		public static function createByXML(xml:XML):Actions
+		{
+			var acts:Actions = new Actions();
+			var i:int;
+			var len:int = xml.action.length();
+			for ( i=0; i<len; i++ )
+			{
+				acts.addAct( Act.createByXML(XML(xml.action[i])) );
+			}
+			return acts;
+		}
 
 		/**
 		 * 添加动作至动作集。
@@ -153,7 +170,6 @@ package qrpg.action
 				act.name = name;
 				acts.put(act.name, act);
 			}
-			trace(currentAct)
 			if ( !currentAct ) currentAct = act;
 		}
 	

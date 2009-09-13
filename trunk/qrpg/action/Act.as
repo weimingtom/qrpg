@@ -55,8 +55,22 @@ package qrpg.action
 		 */		
 		public static function createByXML(xml:XML):Act
 		{
-			//TODO XML格式未定，以后定下再写。
-			return null;
+			var act:Act = new Act(xml.@name, xml.@type);
+			var xmlList:XML;
+			var i:int;
+			var len:int = xml.frame.length();
+			for ( i=0; i<len; i++ )
+			{
+				xmlList = xml.frame[i];
+				act.addFrame(new Frame(Number(xmlList.@x),
+														 Number(xmlList.@y), 
+														 Number(xmlList.@width), 
+														 Number(xmlList.@height), 
+														 Number(xmlList.@cx), 
+														 Number(xmlList.@cy), 
+														 xmlList.@isMirror=="true"));
+			}
+			return act;
 		}
 		
 		/**
@@ -65,8 +79,16 @@ package qrpg.action
 		 */		
 		public function getXML():XML
 		{
-			//TODO XML格式未定，以后定下再写。
-			return null;
+			var xml:XML = <action type={type} name={name}/>
+			var frame:Frame;
+			var i:int;
+			var len:int = _frames.length;
+			for ( i=0; i<len; i++ )
+			{
+				frame = _frames[i];
+				xml.appendChild(<frame width={frame.rect.width} height={frame.rect.height} x={frame.rect.x} y={frame.rect.y} cx={frame.center.x} cy={frame.center.y} mirror={frame.isMirror} />);
+			}
+			return xml;
 		}
 	
 		/**
