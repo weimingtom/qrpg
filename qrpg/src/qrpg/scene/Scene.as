@@ -8,10 +8,9 @@
 
 package qrpg.scene
 {
-	import flash.display.Bitmap;
 	import flash.geom.Rectangle;
 	
-	import qrpg.core.DisplayGameObject;
+	import qrpg.display.DisplayGameObject;
 	import qrpg.display.ISceneAddable;
 	
 	/**
@@ -48,9 +47,8 @@ package qrpg.scene
 	
 		/**
 		 * 向背景添加物体。
-		 * return 返回目前背景有多少个物体。
-		 * 
 		 * @param bg向背景添加的物体。
+		 * return 返回目前背景有多少个物体。
 		 */
 		public function addBackGround(bg:ISceneAddable): int
 		{
@@ -59,10 +57,9 @@ package qrpg.scene
 	
 		/**
 		 * 向背景添加物体。
-		 * return 返回目前背景有多少个物体。
-		 * 
 		 * @param bg向背景添加的物体。
 		 * @param index添加至指定的位置。
+		 * return 返回目前背景有多少个物体。
 		 */
 		public function addBackGroundAt(bg:ISceneAddable, index:int): int
 		{

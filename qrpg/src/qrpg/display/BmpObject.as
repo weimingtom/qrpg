@@ -6,7 +6,7 @@
 //  Original author: 陈策
 ///////////////////////////////////////////////////////////
 
-package qrpg.core
+package qrpg.display
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -14,7 +14,6 @@ package qrpg.core
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.ProgressEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -22,7 +21,6 @@ package qrpg.core
 	
 	import qrpg.action.Act;
 	import qrpg.action.Actions;
-	import qrpg.display.ISceneAddable;
 	import qrpg.event.ActionEvent;
 	
 	/**
@@ -45,11 +43,11 @@ package qrpg.core
 	 * @version 3.0
 	 * @created 12-六月-2009 22:54:20
 	 */
-	public class BmpObject extends EventDispatcher implements ISceneAddable
+	public class BmpObject extends Bitmap implements ISceneAddable
 	{
-		private var _actions:Actions;					//物体动作集。
-		protected var _bmpData:BitmapData;	//物体显示可能用的图片。
-		protected var _source:DisplayObject;	//物体显示可能用的显示对象。
+		private var _actions:Actions;				//物体动作集。
+		//protected var _bmpData:BitmapData;		//物体显示可能用的图片。
+		protected var _source:DisplayObject;		//物体显示可能用的显示对象。
 		protected var _url:URLRequest;				//物体的图片或者显示对象可能的加载路径。
 		
 		protected var _isUpdate:Boolean;			//是否需要更新。
@@ -63,6 +61,7 @@ package qrpg.core
 			super();
 			_isUpdate = false;
 			_isLoaded = false;
+			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		/**
@@ -76,12 +75,12 @@ package qrpg.core
 		{
 			if ( obj is BitmapData )
 			{
-				_bmpData = obj as BitmapData;
+				bitmapData = obj as BitmapData;
 				_isLoaded = true;
 			}
 			else if ( obj is Bitmap )
 			{
-				_bmpData = (obj as Bitmap).bitmapData;
+				bitmapData = (obj as Bitmap).bitmapData;
 				_isLoaded = true;
 			}
 			else if ( obj is DisplayObject )
@@ -94,7 +93,7 @@ package qrpg.core
 				var tmp:* = new obj();
 				if ( tmp is Bitmap )
 				{
-					_bmpData = (tmp as Bitmap).bitmapData;
+					bitmapData = (tmp as Bitmap).bitmapData;
 				}
 				else if ( tmp is DisplayObject )
 				{
@@ -115,17 +114,7 @@ package qrpg.core
 		 */
 		public function set actions(acts:Actions):void
 		{
-			if ( _actions )
-			{
-				_actions.removeEventListener(ActionEvent.STEP, update);
-				_actions.stop();
-			}
 			_actions = acts;
-			if ( _actions )
-			{
-				_actions.addEventListener(ActionEvent.STEP, update);
-				_actions.play();
-			}
 		}
 		public function get actions():Actions
 		{
@@ -176,6 +165,7 @@ package qrpg.core
 		 */		
 		public function get isDisplay():Boolean
 		{
+			//TODO 未做處理
 			return true;
 		}
 		
@@ -200,7 +190,7 @@ package qrpg.core
 			if ( _url )
 			{
 				_source = null;
-				_bmpData = null;
+				bitmapData = null;
 				_isUpdate = true;
 				_isLoaded = false;
 			}
@@ -223,7 +213,7 @@ package qrpg.core
 			}
 			else
 			{
-				bmpData = _bmpData;
+				bmpData = bitmapData;
 			}
 			if ( cut )
 			{
@@ -245,6 +235,7 @@ package qrpg.core
 			if ( act )
 			{
 				_actions.currentAct = act;
+				_isUpdate = true;
 				if ( keepStep )
 				{
 					if ( _actions.pointer>=_actions.currentAct.length )
@@ -259,15 +250,6 @@ package qrpg.core
 			}
 		}
 	
-		/**
-		 * 当动作有更新时，在这里让动作切换，使isUpdata处于true。
-		 * @param evt
-		 */
-		protected function update(evt:Event=null):void
-		{
-			_isUpdate = true;
-		}
-		
 		private function onProgress(evt:ProgressEvent):void
 		{
 			dispatchEvent(evt);
@@ -280,7 +262,7 @@ package qrpg.core
 			load.removeEventListener(Event.COMPLETE, onComplete);
 			if ( load.content is Bitmap )
 			{
-				_bmpData = (load.content as Bitmap).bitmapData;
+				bitmapData = (load.content as Bitmap).bitmapData;
 				_source = null;
 			}
 			else
@@ -290,6 +272,14 @@ package qrpg.core
 			_isUpdate = true;
 			_isLoaded = true;
 			dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
+		protected function onEnterFrame(evt:Event):void
+		{
+			if ( actions )
+			{
+				_isUpdate = _isUpdate || actions.step();
+			}
 		}
 
 	}

@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flexLibProperties version="1">
 <includeClasses>
-<classEntry path="qrpg.action.Act"/>
-<classEntry path="qrpg.action.ActType"/>
-<classEntry path="qrpg.action.Actions"/>
-<classEntry path="qrpg.action.Frame"/>
-<classEntry path="qrpg.compiler.Rander"/>
-<classEntry path="qrpg.core.BmpObject"/>
-<classEntry path="qrpg.core.DisplayGameObject"/>
-<classEntry path="qrpg.display.Building"/>
-<classEntry path="qrpg.display.IBmpObject"/>
-<classEntry path="qrpg.display.ISceneAddable"/>
-<classEntry path="qrpg.display.Npc"/>
-<classEntry path="qrpg.display.Role"/>
-<classEntry path="qrpg.event.ActionEvent"/>
-<classEntry path="qrpg.event.EventPool"/>
-<classEntry path="qrpg.event.GameEvent"/>
-<classEntry path="qrpg.event.GameMouseEvent"/>
-<classEntry path="qrpg.pathfinding.AStar"/>
-<classEntry path="qrpg.pathfinding.BmpData"/>
-<classEntry path="qrpg.pathfinding.IAStarData"/>
-<classEntry path="qrpg.scene.LayerMain"/>
-<classEntry path="qrpg.scene.ObjectGroup"/>
-<classEntry path="qrpg.scene.RPGScene"/>
 <classEntry path="qrpg.scene.Scene"/>
+<classEntry path="qrpg.action.Actions"/>
+<classEntry path="qrpg.display.ISceneAddable"/>
+<classEntry path="qrpg.event.GameEvent"/>
+<classEntry path="qrpg.event.ActionEvent"/>
+<classEntry path="qrpg.scene.RPGScene"/>
+<classEntry path="qrpg.event.GameMouseEvent"/>
+<classEntry path="qrpg.action.ActType"/>
+<classEntry path="qrpg.action.Act"/>
+<classEntry path="qrpg.event.EventPool"/>
+<classEntry path="qrpg.scene.LayerMain"/>
+<classEntry path="qrpg.pathfinding.IAStarData"/>
+<classEntry path="qrpg.compiler.Rander"/>
 <classEntry path="qrpg.scene.SceneBackGround"/>
+<classEntry path="qrpg.pathfinding.AStar"/>
+<classEntry path="qrpg.scene.ObjectGroup"/>
+<classEntry path="qrpg.display.IBmpObject"/>
 <classEntry path="qrpg.scene.SceneLayer"/>
 <classEntry path="qrpg.util.HashMap"/>
+<classEntry path="qrpg.action.Frame"/>
+<classEntry path="qrpg.display.Role"/>
+<classEntry path="qrpg.pathfinding.BmpData"/>
 </includeClasses>
 <includeResources/>
 <namespaceManifests/>

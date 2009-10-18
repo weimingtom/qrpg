@@ -6,7 +6,7 @@
 //  Original author: 陈策
 ///////////////////////////////////////////////////////////
 
-package qrpg.core
+package qrpg.display
 {
 	import flash.display.Sprite;
 	
@@ -25,10 +25,10 @@ package qrpg.core
 		 * @param useWeakReference 确定对侦听器的引用是强引用，还是弱引用。
 		 */
 		override public function addEventListener(type:String,
-																				 listener:Function,
-																				 useCapture:Boolean=false, 
-																				 priority:int=0, 
-																				 useWeakReference:Boolean=true):void
+												 listener:Function,
+												 useCapture:Boolean=false, 
+												 priority:int=0, 
+												 useWeakReference:Boolean=true):void
 		{
 			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
