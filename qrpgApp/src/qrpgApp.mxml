@@ -4,7 +4,7 @@
 	creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
-			import qrpg.core.BmpObject;
+			import qrpg.display.BmpObject;
 			import qrpg.action.Actions;
 			
 			private var roleXMLPath:String = "assets/knight.xml";
@@ -13,8 +13,8 @@
 			private var obj:BmpObject;
 			private var bmp:Bitmap;
 			
-			private var state:String;
-			private var face:int;
+			private var state:String = "stand";
+			private var face:int = 0;
 			
 			private function init():void
 			{

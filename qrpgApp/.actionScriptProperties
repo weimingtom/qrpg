@@ -11,6 +11,7 @@
 </compiler>
 <applications>
 <application path="qrpgApp.mxml"/>
+<application path="test.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>
