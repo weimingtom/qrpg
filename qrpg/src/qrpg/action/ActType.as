@@ -18,7 +18,7 @@ package qrpg.action
 		/**
 		 * 循环播放。
 		 */
-		static public const LOOP: String = "loop";
+		static public const LOOP: String = "loops";
 		
 		/**
 		 * 停止播放。
