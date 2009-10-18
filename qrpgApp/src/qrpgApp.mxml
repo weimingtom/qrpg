@@ -1,4 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
-	
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#FFFFFF, #FFFFFF]" 
+	creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import qrpg.core.BmpObject;
+			import qrpg.action.Actions;
+			
+			private var roleXMLPath:String = "assets/knight.xml";
+			private var roleImgPath:String = "assets/knight.png";
+			
+			private var obj:BmpObject;
+			private var bmp:Bitmap;
+			
+			private var state:String;
+			private var face:int;
+			
+			private function init():void
+			{
+				var load:URLLoader = new URLLoader();
+				load.load(new URLRequest(roleXMLPath));
+				load.addEventListener(Event.COMPLETE, roleXMLCompleteHandler);
+			}
+			
+			private function roleXMLCompleteHandler(evt:Event):void
+			{
+				var xml:XML = new XML((evt.currentTarget as URLLoader).data);
+				var acts:Actions = Actions.createByXML(XML(xml.actions));
+				
+				obj = new BmpObject();
+				obj.source = roleImgPath;
+				obj.actions = acts;
+				obj.addEventListener(Event.COMPLETE, roleCompleteHandler);
+			}
+			
+			private function roleCompleteHandler(evt:Event):void
+			{
+				var bmpData:BitmapData = obj.displayData(true);
+				bmp = new Bitmap(bmpData);
+				img.source = bmp;
+				
+				img.x = 100+obj.displayPoint.x;
+				img.y = 100+obj.displayPoint.y;
+				
+				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+			}
+			
+			private function enterFrameHandler(evt:Event):void
+			{
+				if ( obj.isUpdate )
+				{
+					bmp.bitmapData = obj.displayData(true);
+					img.x = 100+obj.displayPoint.x;
+					img.y = 100+obj.displayPoint.y;
+				}
+			}
+			
+			private function doAction():void
+			{
+				obj.changeAct(state+"_"+face, true);
+			}
+			
+			private function walk():void
+			{
+				state = "walk";
+				doAction();
+			}
+			
+			private function stand():void
+			{
+				state = "stand";
+				doAction();
+			}
+			
+			private function turnLeft():void
+			{
+				face<7 ? face++ : face=0;
+				doAction();
+			}
+			
+			private function turnRight():void
+			{
+				face>0 ? face-- : face=7;
+				doAction();
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Image id="img"/>
+	<mx:Button x="10" y="241" label="stand" click="stand()"/>
+	<mx:Button x="76" y="241" label="run" click="walk()"/>
+	<mx:Button x="10" y="271" label="left" click="turnLeft()"/>
+	<mx:Button x="68" y="271" label="right" click="turnRight()"/>
 </mx:Application>
