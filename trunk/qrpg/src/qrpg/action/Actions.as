@@ -8,8 +8,7 @@
 
 package qrpg.action
 {
-	import flash.display.Sprite;
-	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	
 	import qrpg.event.ActionEvent;
 	import qrpg.event.GameEvent;
@@ -39,18 +38,18 @@ package qrpg.action
 	 * @version 3.0
 	 * @created 12-六月-2009 22:54:20
 	 */
-	public class Actions extends Sprite
+	public class Actions extends EventDispatcher
 	{
 		/**
 		 * 是否为隔帧动作。默认为隔帧动作。非隔帧动作即每帧动作，会让动作更流畅，但需要的图片也越多。
 		 */		
 		public var hasInterval:Boolean;
 		
-		private var acts:HashMap;			//存放动作集。
-		private var _defaultAct:Act;		//默认动作。
-		private var _currentAct:Act;		//当前动作。
-		private var _lastAct:Act;				//最后一个动作。
-		private var _pointer:int;				//动作指针。
+		private var acts:HashMap;		//存放动作集。
+		private var _defaultAct:Act;	//默认动作。
+		private var _currentAct:Act;	//当前动作。
+		private var _lastAct:Act;		//最后一个动作。
+		private var _pointer:int;		//动作指针。
 		private var _runTime:Boolean;	//是否是播放时间。
 		private var _isPlaying:Boolean;	//是否正在播放。
 		
@@ -63,7 +62,7 @@ package qrpg.action
 			acts = new HashMap();
 			_pointer = 0;
 			_runTime = true;
-			_isPlaying = false;
+			_isPlaying = true;
 		}
 	
 		/**
@@ -94,11 +93,7 @@ package qrpg.action
 			{
 				_lastAct = _currentAct;
 				_currentAct = act;
-				if ( isPlaying )
-				{
-					if ( act.type != ActType.STOP ) addEventListener(Event.ENTER_FRAME, step);
-					else removeEventListener(Event.ENTER_FRAME, step);
-				}
+				_isPlaying = true;
 				dispatchEvent(new GameEvent(ActionEvent.ACTION_CHANGE));
 			}
 		}
@@ -161,15 +156,8 @@ package qrpg.action
 		 */
 		public function addAct(act:Act, name:String=null): void
 		{
-			if ( name==null )
-			{
-				acts.put(act.name, act);
-			}
-			else
-			{
-				act.name = name;
-				acts.put(act.name, act);
-			}
+			if ( name!=null ) act.name = name;
+			acts.put(act.name, act);
 			if ( !currentAct ) currentAct = act;
 		}
 	
@@ -212,68 +200,54 @@ package qrpg.action
 		}
 		
 		/**
-		 * 播放动作。
+		 * 动作向前一步。
+		 * return 动作是否做了更新。
 		 */		
-		public function play():void
+		public function step():Boolean
 		{
-			_isPlaying = true;
-			if ( currentAct && currentAct.type != ActType.STOP )
-				addEventListener(Event.ENTER_FRAME, step);
+			_runTime = !_runTime;
+			if ( !isPlaying || (hasInterval && !_runTime) ) return false;
+			if ( pointer<currentAct.length-1 )
+			{
+				pointer++;
+			}
+			else
+			{
+				switch ( currentAct.type )
+				{
+					case ActType.LOOP:
+						pointer = 0;
+						break;
+					case ActType.PLAY_DEFAULT:
+						pointer = 0;
+						currentAct = defaultAct;
+						break;
+					case ActType.PLAY_LAST:
+						pointer = 0;
+						currentAct = _lastAct;
+						break;
+					case ActType.STOP:
+						pointer = 0;
+						_isPlaying = false;
+						break;
+					case ActType.STOP_AT_FIRST:
+						pointer = 0;
+						_isPlaying = false;
+						break;
+					case ActType.STOP_AT_LAST:
+						_isPlaying = false;
+						return false;
+						break;
+				}
+			}
+			dispatchEvent(new ActionEvent(ActionEvent.STEP));
+			return true;
 		}
 		
-		/**
-		 * 停止动作。
-		 */		
-		public function stop():void
-		{
-			_isPlaying = false;
-			removeEventListener(Event.ENTER_FRAME, step);
-		}
 		
 		override public function toString():String
 		{
 			return "[Actions size:"+acts.size()+"]";
-		}
-		
-		private function step(evt:Event):void
-		{
-			_runTime = !_runTime;
-			if ( !hasInterval || _runTime )
-			{
-				if ( pointer<currentAct.length-1 )
-				{
-					pointer++;
-				}
-				else
-				{
-					switch ( currentAct.type )
-					{
-						case ActType.LOOP:
-							pointer = 0;
-							break;
-						case ActType.PLAY_DEFAULT:
-							pointer = 0;
-							currentAct = defaultAct;
-							break;
-						case ActType.PLAY_LAST:
-							pointer = 0;
-							currentAct = _lastAct;
-							break;
-						case ActType.STOP:
-							pointer = 0;
-							removeEventListener(Event.ENTER_FRAME, step);
-							break;
-						case ActType.STOP_AT_FIRST:
-							pointer = 0;
-							removeEventListener(Event.ENTER_FRAME, step);
-							break;
-						case ActType.STOP_AT_LAST:
-							removeEventListener(Event.ENTER_FRAME, step);
-							break;
-					}
-				}
-				dispatchEvent(new ActionEvent(ActionEvent.STEP));
-			}
 		}
 
 	}
