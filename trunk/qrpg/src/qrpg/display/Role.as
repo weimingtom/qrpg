@@ -12,7 +12,6 @@ package qrpg.display
 	import flash.events.Event;
 	
 	import qrpg.action.Actions;
-	import qrpg.core.BmpObject;
 	
 	/**
 	 * 角色类。
@@ -52,7 +51,7 @@ package qrpg.display
 			if ( _url )
 			{
 				if ( actions!=defaultActions ) _realActions = actions;
-				_bmpData = defaultSource;
+				bitmapData = defaultSource;
 				actions = defaultActions;
 				_source = null;
 				_isUpdate = true;

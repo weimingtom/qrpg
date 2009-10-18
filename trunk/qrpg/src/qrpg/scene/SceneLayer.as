@@ -5,7 +5,7 @@ package qrpg.scene
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
-	import qrpg.core.DisplayGameObject;
+	import qrpg.display.DisplayGameObject;
 	import qrpg.display.ISceneAddable;
 	
 	public class SceneLayer extends DisplayGameObject
