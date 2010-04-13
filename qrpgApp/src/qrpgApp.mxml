@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#FFFFFF, #FFFFFF]" 
+	backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#5DA0D9, #6CC6D3]" 
 	creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
@@ -36,6 +36,7 @@
 			
 			private function roleCompleteHandler(evt:Event):void
 			{
+				obj.removeEventListener(Event.COMPLETE, roleCompleteHandler);
 				var bmpData:BitmapData = obj.displayData(true);
 				bmp = new Bitmap(bmpData);
 				img.source = bmp;
