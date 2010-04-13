@@ -68,7 +68,7 @@ package qrpg.action
 														 Number(xmlList.@height), 
 														 Number(xmlList.@cx), 
 														 Number(xmlList.@cy), 
-														 xmlList.@isMirror=="true"));
+														 String(xmlList.@mirror)=="true"));
 			}
 			return act;
 		}
@@ -158,6 +158,24 @@ package qrpg.action
 		{
 			var remove:Frame = _frames.splice(index,1)[0];
 			return remove;
+		}
+		
+		/**
+		 * 是否包含有镜像的帧。
+		 * @return 
+		 */		
+		public function hasMirrorFrame():Boolean
+		{
+			var i:int;
+			var len:int = _frames.length;
+			for ( i=0; i<len; i++ )
+			{
+				if ( (_frames[i] as Frame).isMirror )
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		public function toString():String

@@ -11,6 +11,11 @@ package qrpg.event
 	public class GameEvent extends Event
 	{
 		/**
+		 * 物体的显示需要更新。
+		 */		
+		public static const UPDATE:String = "update";
+		
+		/**
 		 * 游戏的基础事件。
 		 * @param type
 		 * @param bubbles
