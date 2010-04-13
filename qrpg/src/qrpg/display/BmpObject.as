@@ -15,13 +15,14 @@ package qrpg.display
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	
 	import qrpg.action.Act;
 	import qrpg.action.Actions;
-	import qrpg.event.ActionEvent;
+	import qrpg.event.GameEvent;
 	
 	/**
 	 * 加载过程中。
@@ -36,6 +37,12 @@ package qrpg.display
 	[Event(name="complete", type="flash.events.Event")]
 	
 	/**
+	 * 显示需要更新。
+	 * @EventType qrpg.event.GameEvent.UPDATE
+	 */	
+	[Event(name="update", type="qrpg.event.GameEvent")]
+	
+	/**
 	 * 显示物体的基类。
 	 * 该类不是DisplayObject的子类，所以是不可以添加至显示列表里的。<br/>
 	 * 要显示该类的实例，需要用该类的displayData()方法得到需要显示的图像的BitmapData。
@@ -46,9 +53,9 @@ package qrpg.display
 	public class BmpObject extends Bitmap implements ISceneAddable
 	{
 		private var _actions:Actions;				//物体动作集。
-		//protected var _bmpData:BitmapData;		//物体显示可能用的图片。
 		protected var _source:DisplayObject;		//物体显示可能用的显示对象。
 		protected var _url:URLRequest;				//物体的图片或者显示对象可能的加载路径。
+		protected var _mirrorBitmapData:BitmapData;	//如果有镜像侦，则会存在这里。
 		
 		protected var _isUpdate:Boolean;			//是否需要更新。
 		protected var _isLoaded:Boolean;			//是否已经加载。
@@ -77,11 +84,13 @@ package qrpg.display
 			{
 				bitmapData = obj as BitmapData;
 				_isLoaded = true;
+				checkMirror();
 			}
 			else if ( obj is Bitmap )
 			{
 				bitmapData = (obj as Bitmap).bitmapData;
 				_isLoaded = true;
+				checkMirror();
 			}
 			else if ( obj is DisplayObject )
 			{
@@ -94,10 +103,15 @@ package qrpg.display
 				if ( tmp is Bitmap )
 				{
 					bitmapData = (tmp as Bitmap).bitmapData;
+					checkMirror();
 				}
 				else if ( tmp is DisplayObject )
 				{
 					_source = tmp as DisplayObject;
+				}
+				else
+				{
+					throw new Error("参数类型不正确。");
 				}
 				_isLoaded = true;
 			}
@@ -112,13 +126,14 @@ package qrpg.display
 		/**
 		 * 物体的动作集。
 		 */
-		public function set actions(acts:Actions):void
-		{
-			_actions = acts;
-		}
 		public function get actions():Actions
 		{
 			return _actions;
+		}
+		public function set actions(acts:Actions):void
+		{
+			_actions = acts;
+			checkMirror();
 		}
 		
 		/**
@@ -132,6 +147,11 @@ package qrpg.display
 			_isUpdate = false;
 			return value;
 		}
+		public function set isUpdate(value:Boolean):void
+		{
+			_isUpdate = value;
+			if ( _isUpdate ) dispatchEvent(new GameEvent(GameEvent.UPDATE));
+		}
 		
 		/**
 		 * 是否已经加载。
@@ -140,14 +160,6 @@ package qrpg.display
 		{
 			return _isLoaded;
 		}
-	
-		/**
-		 * 显示区域。
-		 */
-		public function get displayRect():Rectangle
-		{
-			return _actions.currentFrame.rect;
-		}
 		
 		/**
 		 * 显示的中心。
@@ -155,9 +167,25 @@ package qrpg.display
 		public function get displayPoint():Point
 		{
 			var p:Point = new Point();
-			p.x = -actions.currentFrame.center.x;
+			if ( !isMirror )
+			{
+				p.x = -actions.currentFrame.center.x;
+			}
+			else
+			{
+				p.x = actions.currentFrame.center.x - actions.currentFrame.rect.width;
+			}
 			p.y = -actions.currentFrame.center.y;
 			return p;
+		}
+		
+		/**
+		 * 目前该对象的显示是否为水平镜像显示
+		 * @return 
+		 */		
+		public function get isMirror():Boolean
+		{
+			return _actions.currentFrame.isMirror;
 		}
 		
 		/**
@@ -191,7 +219,7 @@ package qrpg.display
 			{
 				_source = null;
 				bitmapData = null;
-				_isUpdate = true;
+				isUpdate = true;
 				_isLoaded = false;
 			}
 		}
@@ -209,19 +237,49 @@ package qrpg.display
 			if ( _source )
 			{
 				bmpData = new BitmapData(_source.width, _source.height, true, 0);
-				bmpData.draw(_source);
+				if ( !isMirror )
+				{
+					bmpData.draw(_source);
+				}
+				else
+				{
+					bmpData.draw(_source,new Matrix(-1,0,0,1,_source.width));
+				}
 			}
 			else
 			{
-				bmpData = bitmapData;
+				bmpData = isMirror ? _mirrorBitmapData : bitmapData;
 			}
 			if ( cut )
 			{
-				var cutData:BitmapData = new BitmapData(displayRect.width, displayRect.height, true, 0);
-				cutData.copyPixels(bmpData, displayRect, new Point());
+				var viewRect:Rectangle = displayRect(isMirror);
+				var cutData:BitmapData = new BitmapData(viewRect.width, viewRect.height, true, 0);
+				cutData.copyPixels(bmpData, viewRect, new Point());
 				return cutData;
 			}
 			return bmpData;
+		}
+		
+		/**
+		 * 显示区域。
+		 */
+		public function displayRect(mirror:Boolean):Rectangle
+		{
+			var quondamRect:Rectangle = _actions.currentFrame.rect
+			if ( !mirror ) return quondamRect;
+			var rect:Rectangle = new Rectangle();
+			if ( _source )
+			{
+				rect.x = _source.width - quondamRect.x - quondamRect.width;
+			}
+			else
+			{
+				rect.x = bitmapData.width - quondamRect.x - quondamRect.width;
+			}
+			rect.y = quondamRect.y;
+			rect.width = quondamRect.width;
+			rect.height = quondamRect.height;
+			return rect;
 		}
 		
 		/**
@@ -235,7 +293,7 @@ package qrpg.display
 			if ( act )
 			{
 				_actions.currentAct = act;
-				_isUpdate = true;
+				isUpdate = true;
 				if ( keepStep )
 				{
 					if ( _actions.pointer>=_actions.currentAct.length )
@@ -264,12 +322,13 @@ package qrpg.display
 			{
 				bitmapData = (load.content as Bitmap).bitmapData;
 				_source = null;
+				checkMirror();
 			}
 			else
 			{
 				_source = load.content;
 			}
-			_isUpdate = true;
+			isUpdate = true;
 			_isLoaded = true;
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
@@ -278,7 +337,16 @@ package qrpg.display
 		{
 			if ( actions )
 			{
-				_isUpdate = _isUpdate || actions.step();
+				isUpdate = _isUpdate || actions.step();
+			}
+		}
+		
+		private function checkMirror():void
+		{
+			if ( bitmapData && _actions.hasMirrorFrame() )
+			{
+				_mirrorBitmapData = new BitmapData(bitmapData.width, bitmapData.height,true,0);
+				_mirrorBitmapData.draw(bitmapData, new Matrix(-1,0,0,1,bitmapData.width));
 			}
 		}
 

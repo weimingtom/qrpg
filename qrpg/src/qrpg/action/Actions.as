@@ -45,7 +45,7 @@ package qrpg.action
 		 */		
 		public var hasInterval:Boolean;
 		
-		private var acts:HashMap;		//存放动作集。
+		private var _acts:HashMap;		//存放动作集。
 		private var _defaultAct:Act;	//默认动作。
 		private var _currentAct:Act;	//当前动作。
 		private var _lastAct:Act;		//最后一个动作。
@@ -59,7 +59,7 @@ package qrpg.action
 		public function Actions():void
 		{
 			hasInterval = true;
-			acts = new HashMap();
+			_acts = new HashMap();
 			_pointer = 0;
 			_runTime = true;
 			_isPlaying = true;
@@ -74,7 +74,7 @@ package qrpg.action
 		}
 		public function set defaultAct(act:Act): void
 		{
-			if ( acts.containsValue(act) )
+			if ( _acts.containsValue(act) )
 			{
 				_defaultAct = act;
 			}
@@ -89,7 +89,7 @@ package qrpg.action
 		}
 		public function set currentAct(act:Act):void
 		{
-			if ( acts.containsValue(act) && _currentAct!=act )
+			if ( _acts.containsValue(act) && _currentAct!=act )
 			{
 				_lastAct = _currentAct;
 				_currentAct = act;
@@ -157,7 +157,7 @@ package qrpg.action
 		public function addAct(act:Act, name:String=null): void
 		{
 			if ( name!=null ) act.name = name;
-			acts.put(act.name, act);
+			_acts.put(act.name, act);
 			if ( !currentAct ) currentAct = act;
 		}
 	
@@ -168,9 +168,9 @@ package qrpg.action
 		 */
 		public function removeAct(act:Act): Act
 		{
-			if ( acts.containsValue(act) )
+			if ( _acts.containsValue(act) )
 			{
-				return acts.remove(act.name) as Act;
+				return _acts.remove(act.name) as Act;
 			}
 			return null;
 		}
@@ -182,9 +182,9 @@ package qrpg.action
 		 */
 		public function removeActByName(name:String):Act
 		{
-			if ( acts.containsKey(name) )
+			if ( _acts.containsKey(name) )
 			{
-				return acts.remove(name)
+				return _acts.remove(name)
 			}
 			return null;
 		}
@@ -196,7 +196,7 @@ package qrpg.action
 		 */		
 		public function getActByName(name:String):Act
 		{
-			return acts.getValue(name);
+			return _acts.getValue(name);
 		}
 		
 		/**
@@ -244,10 +244,28 @@ package qrpg.action
 			return true;
 		}
 		
+		/**
+		 * 是否包含有镜像的帧。
+		 * @return 
+		 */		
+		public function hasMirrorFrame():Boolean
+		{
+			var arr:Array = _acts.values();
+			var i:int;
+			var len:int = arr.length;
+			for ( i=0; i<len; i++ )
+			{
+				if ( (arr[i] as Act).hasMirrorFrame() )
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 		
 		override public function toString():String
 		{
-			return "[Actions size:"+acts.size()+"]";
+			return "[Actions size:"+_acts.size()+"]";
 		}
 
 	}

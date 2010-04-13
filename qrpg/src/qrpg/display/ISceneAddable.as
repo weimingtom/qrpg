@@ -31,7 +31,7 @@ package qrpg.display
 	    /**
 	     * 代表默认显示区域的矩形。
 	     */
-	    function get displayRect(): Rectangle;
+	    function displayRect(mirror:Boolean): Rectangle;
 	    
 	    /**
 	     * 代表默认显示区域的中心。
