@@ -4,6 +4,7 @@
 	creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import qrpg.event.GameEvent;
 			import qrpg.display.BmpObject;
 			import qrpg.action.Actions;
 			
@@ -44,10 +45,10 @@
 				img.x = 100+obj.displayPoint.x;
 				img.y = 100+obj.displayPoint.y;
 				
-				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+				obj.addEventListener(GameEvent.UPDATE, roleUpdateHandler);
 			}
 			
-			private function enterFrameHandler(evt:Event):void
+			private function roleUpdateHandler(evt:Event):void
 			{
 				if ( obj.isUpdate )
 				{
