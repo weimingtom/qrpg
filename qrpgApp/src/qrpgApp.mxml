@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="36"
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
 	backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#A6D95D, #7DD36C]" 
 	creationComplete="init()">
 	<mx:Script>
@@ -32,7 +32,7 @@
 				var acts:Actions = Actions.createByXML(XML(xml.actions));
 				
 				role = new RPGRole();
-				role.speed = 6;
+				role.speed = 10;
 				role.x = 100;
 				role.y = 100;
 				role.moveTo(role.x, role.y);

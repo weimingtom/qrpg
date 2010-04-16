@@ -3,21 +3,22 @@
 <includeClasses>
 <classEntry path="qrpg.display.RPGRole"/>
 <classEntry path="qrpg.display.DisplayGameObject"/>
-<classEntry path="qrpg.action.Actions"/>
 <classEntry path="qrpg.display.ISceneAddable"/>
+<classEntry path="qrpg.action.Actions"/>
 <classEntry path="qrpg.event.GameEvent"/>
 <classEntry path="qrpg.util.GameMath"/>
 <classEntry path="qrpg.event.ActionEvent"/>
 <classEntry path="qrpg.event.GameMouseEvent"/>
 <classEntry path="qrpg.display.RPGRoleActionType"/>
 <classEntry path="qrpg.action.ActType"/>
-<classEntry path="qrpg.action.Act"/>
 <classEntry path="qrpg.event.EventPool"/>
+<classEntry path="qrpg.action.Act"/>
 <classEntry path="qrpg.pathfinding.IAStarData"/>
 <classEntry path="qrpg.pathfinding.AStar"/>
+<classEntry path="qrpg.scene.SceneLayer"/>
 <classEntry path="qrpg.util.HashMap"/>
-<classEntry path="qrpg.action.Frame"/>
 <classEntry path="qrpg.display.Role"/>
+<classEntry path="qrpg.action.Frame"/>
 <classEntry path="qrpg.pathfinding.BmpData"/>
 </includeClasses>
 <includeResources/>

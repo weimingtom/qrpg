@@ -49,7 +49,7 @@ package qrpg.action
 		 */		
 		public function Actions():void
 		{
-			hasInterval = true;
+			hasInterval = false;
 			_acts = new HashMap();
 			_pointer = 0;
 			_runTime = true;
