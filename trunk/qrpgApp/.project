@@ -3,6 +3,7 @@
 	<name>qrpgApp</name>
 	<comment></comment>
 	<projects>
+		<project>qrpg</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
