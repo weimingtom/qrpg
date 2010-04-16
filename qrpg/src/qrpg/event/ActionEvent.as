@@ -4,7 +4,6 @@ package qrpg.event
 	 * 动作事件。
 	 * @author 陈策
 	 * @version 3.0
-	 * @created 21-六月-2009 18:51:20
 	 */	
 	public class ActionEvent extends GameEvent
 	{

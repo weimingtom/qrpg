@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#5DA0D9, #6CC6D3]" 
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" frameRate="36"
+	backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#A6D95D, #7DD36C]" 
 	creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import flash.utils.getTimer;
+			import qrpg.display.RPGRole;
+			import qrpg.display.DisplayGameObject;
 			import qrpg.event.GameEvent;
-			import qrpg.display.BmpObject;
 			import qrpg.action.Actions;
 			
 			private var roleXMLPath:String = "assets/knight.xml";
 			private var roleImgPath:String = "assets/knight.png";
 			
-			private var obj:BmpObject;
+			private var role:RPGRole;
 			private var bmp:Bitmap;
 			
 			private var state:String = "stand";
@@ -29,38 +31,52 @@
 				var xml:XML = new XML((evt.currentTarget as URLLoader).data);
 				var acts:Actions = Actions.createByXML(XML(xml.actions));
 				
-				obj = new BmpObject();
-				obj.source = roleImgPath;
-				obj.actions = acts;
-				obj.addEventListener(Event.COMPLETE, roleCompleteHandler);
+				role = new RPGRole();
+				role.speed = 6;
+				role.x = 100;
+				role.y = 100;
+				role.moveTo(role.x, role.y);
+				role.source = roleImgPath;
+				role.actions = acts;
+				role.addEventListener(Event.COMPLETE, roleCompleteHandler);
 			}
 			
 			private function roleCompleteHandler(evt:Event):void
 			{
-				obj.removeEventListener(Event.COMPLETE, roleCompleteHandler);
-				var bmpData:BitmapData = obj.displayData(true);
+				role.removeEventListener(Event.COMPLETE, roleCompleteHandler);
+				var bmpData:BitmapData = role.displayData(true);
 				bmp = new Bitmap(bmpData);
 				img.source = bmp;
 				
-				img.x = 100+obj.displayPoint.x;
-				img.y = 100+obj.displayPoint.y;
+				img.x = role.x + role.displayPoint.x;
+				img.y = role.y + role.displayPoint.y;
 				
-				obj.addEventListener(GameEvent.UPDATE, roleUpdateHandler);
+				role.addEventListener(GameEvent.UPDATE, roleUpdateHandler);
+				addEventListener(Event.ENTER_FRAME, loop);
+				addEventListener(MouseEvent.CLICK, clickHandler);
 			}
 			
 			private function roleUpdateHandler(evt:Event):void
 			{
-				if ( obj.isUpdate )
-				{
-					bmp.bitmapData = obj.displayData(true);
-					img.x = 100+obj.displayPoint.x;
-					img.y = 100+obj.displayPoint.y;
-				}
+				bmp.bitmapData = role.displayData(true);
+				role.isUpdate = false;
+				img.x = role.x + role.displayPoint.x;
+				img.y = role.y + role.displayPoint.y;
 			}
 			
-			private function doAction():void
+			private function clickHandler(evt:MouseEvent):void
 			{
-				obj.changeAct(state+"_"+face, true);
+				role.moveTo(mouseX, mouseY);
+			}
+			
+			private function loop(evt:Event):void
+			{
+				role.step();
+			}
+			
+			/* private function doAction():void
+			{
+				role.changeAct(state+"_"+face, true);
 			}
 			
 			private function walk():void
@@ -85,13 +101,13 @@
 			{
 				face>0 ? face-- : face=7;
 				doAction();
-			}
+			} */
 			
 		]]>
 	</mx:Script>
 	<mx:Image id="img"/>
-	<mx:Button x="10" y="241" label="stand" click="stand()"/>
+	<!--<mx:Button x="10" y="241" label="stand" click="stand()"/>
 	<mx:Button x="76" y="241" label="run" click="walk()"/>
 	<mx:Button x="10" y="271" label="left" click="turnLeft()"/>
-	<mx:Button x="68" y="271" label="right" click="turnRight()"/>
+	<mx:Button x="68" y="271" label="right" click="turnRight()"/>-->
 </mx:Application>

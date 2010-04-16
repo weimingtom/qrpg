@@ -30,6 +30,7 @@ package qrpg.display
 
 	    /**
 	     * 代表默认显示区域的矩形。
+	     * @param mirror 是否需要水平翻转
 	     */
 	    function displayRect(mirror:Boolean): Rectangle;
 	    

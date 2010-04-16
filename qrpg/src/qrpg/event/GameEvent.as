@@ -6,7 +6,6 @@ package qrpg.event
 	 * 游戏的基础事件。
 	 * @author 陈策
 	 * @version 3.0
-	 * @created 12-六月-2009 22:54:21
 	 */
 	public class GameEvent extends Event
 	{
@@ -31,7 +30,7 @@ package qrpg.event
 		 */
 		public function dispatch(): void
 		{
-			EventPool.getInstace().dispatchEvent(this);
+			EventPool.getInstance().dispatchEvent(this);
 		}
 		
 	}
