@@ -5,19 +5,20 @@
 	<mx:Script>
 		<![CDATA[
 			import flash.utils.getTimer;
-			import qrpg.display.RPGRole;
-			import qrpg.display.DisplayGameObject;
-			import qrpg.event.GameEvent;
+			
+			import mx.events.FlexEvent;
+			
 			import qrpg.action.Actions;
+			import qrpg.display.DisplayGameObject;
+			import qrpg.display.RPGRole;
+			import qrpg.event.GameEvent;
 			
 			private var roleXMLPath:String = "assets/knight.xml";
 			private var roleImgPath:String = "assets/knight.png";
 			
 			private var role:RPGRole;
-			private var bmp:Bitmap;
 			
-			private var state:String = "stand";
-			private var face:int = 0;
+			private var roleRect:Rectangle;
 			
 			private function init():void
 			{
@@ -28,6 +29,7 @@
 			
 			private function roleXMLCompleteHandler(evt:Event):void
 			{
+				(evt.currentTarget as URLLoader).removeEventListener(Event.COMPLETE, roleXMLCompleteHandler);
 				var xml:XML = new XML((evt.currentTarget as URLLoader).data);
 				var acts:Actions = Actions.createByXML(XML(xml.actions));
 				
@@ -44,24 +46,27 @@
 			private function roleCompleteHandler(evt:Event):void
 			{
 				role.removeEventListener(Event.COMPLETE, roleCompleteHandler);
-				var bmpData:BitmapData = role.displayData(true);
-				bmp = new Bitmap(bmpData);
-				img.source = bmp;
-				
-				img.x = role.x + role.displayPoint.x;
-				img.y = role.y + role.displayPoint.y;
+				var bmpData:BitmapData = new BitmapData(stage.stageWidth, stage.stageHeight, true, 0);
+				img.source = new Bitmap(bmpData);
 				
 				role.addEventListener(GameEvent.UPDATE, roleUpdateHandler);
 				addEventListener(Event.ENTER_FRAME, loop);
 				addEventListener(MouseEvent.CLICK, clickHandler);
+				addEventListener(Event.RESIZE, resizeHandler);
 			}
 			
 			private function roleUpdateHandler(evt:Event):void
 			{
-				bmp.bitmapData = role.displayData(true);
+				var bmp:BitmapData = (img.source as Bitmap).bitmapData
+				var pic:BitmapData = role.displayData();
+				var rect:Rectangle = role.displayRect;
+				var dest:Point = role.displayPoint;
+				if ( roleRect ) bmp.fillRect(roleRect,0);
+				bmp.copyPixels(pic, rect, dest, null, null, false); 
+				roleRect = rect.clone();
+				roleRect.x = dest.x;
+				roleRect.y = dest.y;
 				role.isUpdate = false;
-				img.x = role.x + role.displayPoint.x;
-				img.y = role.y + role.displayPoint.y;
 			}
 			
 			private function clickHandler(evt:MouseEvent):void
@@ -74,40 +79,12 @@
 				role.step();
 			}
 			
-			/* private function doAction():void
+			private function resizeHandler(evt:Event):void
 			{
-				role.changeAct(state+"_"+face, true);
+				(img.source as Bitmap).bitmapData = new BitmapData(stage.stageWidth, stage.stageHeight, true, 0);
 			}
-			
-			private function walk():void
-			{
-				state = "walk";
-				doAction();
-			}
-			
-			private function stand():void
-			{
-				state = "stand";
-				doAction();
-			}
-			
-			private function turnLeft():void
-			{
-				face<7 ? face++ : face=0;
-				doAction();
-			}
-			
-			private function turnRight():void
-			{
-				face>0 ? face-- : face=7;
-				doAction();
-			} */
 			
 		]]>
 	</mx:Script>
 	<mx:Image id="img"/>
-	<!--<mx:Button x="10" y="241" label="stand" click="stand()"/>
-	<mx:Button x="76" y="241" label="run" click="walk()"/>
-	<mx:Button x="10" y="271" label="left" click="turnLeft()"/>
-	<mx:Button x="68" y="271" label="right" click="turnRight()"/>-->
 </mx:Application>
