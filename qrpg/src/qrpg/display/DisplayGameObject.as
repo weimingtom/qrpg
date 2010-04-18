@@ -44,6 +44,16 @@ package qrpg.display
 	 */
 	public class DisplayGameObject extends EventDispatcher implements ISceneAddable
 	{
+		/**
+		 * X座标。
+		 */		
+		public var x:Number;
+		
+		/**
+		 * Y座标。
+		 */		
+		public var y:Number;
+		
 		private var _actions:Actions;				//物体动作集。
 		protected var _source:DisplayObject;		//物体显示可能用的显示对象。
 		protected var _url:URLRequest;				//物体的图片或者显示对象可能的加载路径。
@@ -152,6 +162,28 @@ package qrpg.display
 		}
 		
 		/**
+		 * 显示区域。
+		 */
+		public function get displayRect():Rectangle
+		{
+			var quondamRect:Rectangle = _actions.currentFrame.rect
+			if ( !isMirror ) return quondamRect;
+			var rect:Rectangle = new Rectangle();
+			if ( _source )
+			{
+				rect.x = _source.width - quondamRect.x - quondamRect.width;
+			}
+			else
+			{
+				rect.x = _bitmapData.width - quondamRect.x - quondamRect.width;
+			}
+			rect.y = quondamRect.y;
+			rect.width = quondamRect.width;
+			rect.height = quondamRect.height;
+			return rect;
+		}
+		
+		/**
 		 * 显示的中心。
 		 */		
 		public function get displayPoint():Point
@@ -159,19 +191,18 @@ package qrpg.display
 			var p:Point = new Point();
 			if ( !isMirror )
 			{
-				p.x = -actions.currentFrame.center.x;
+				p.x = x - actions.currentFrame.center.x;
 			}
 			else
 			{
-				p.x = actions.currentFrame.center.x - actions.currentFrame.rect.width;
+				p.x = x + actions.currentFrame.center.x - actions.currentFrame.rect.width;
 			}
-			p.y = -actions.currentFrame.center.y;
+			p.y = y - actions.currentFrame.center.y;
 			return p;
 		}
 		
 		/**
 		 * 目前该对象的显示是否为水平镜像显示
-		 * @return 
 		 */		
 		public function get isMirror():Boolean
 		{
@@ -216,7 +247,7 @@ package qrpg.display
 		}
 		
 		/**
-		 * 播放。由外部每帧（或者每隔一段时间调用）
+		 * 播放。由外部每帧（或者每隔一段时间）调用
 		 */		
 		public function step():void
 		{
@@ -254,34 +285,12 @@ package qrpg.display
 			}
 			if ( cut )
 			{
-				var viewRect:Rectangle = displayRect(isMirror);
+				var viewRect:Rectangle = displayRect;
 				var cutData:BitmapData = new BitmapData(viewRect.width, viewRect.height, true, 0);
 				cutData.copyPixels(bmpData, viewRect, new Point());
 				return cutData;
 			}
 			return bmpData;
-		}
-		
-		/**
-		 * 显示区域。
-		 */
-		public function displayRect(mirror:Boolean):Rectangle
-		{
-			var quondamRect:Rectangle = _actions.currentFrame.rect
-			if ( !mirror ) return quondamRect;
-			var rect:Rectangle = new Rectangle();
-			if ( _source )
-			{
-				rect.x = _source.width - quondamRect.x - quondamRect.width;
-			}
-			else
-			{
-				rect.x = _bitmapData.width - quondamRect.x - quondamRect.width;
-			}
-			rect.y = quondamRect.y;
-			rect.width = quondamRect.width;
-			rect.height = quondamRect.height;
-			return rect;
 		}
 		
 		/**

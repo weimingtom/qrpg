@@ -10,16 +10,6 @@ package qrpg.display
 	public class RPGRole extends Role implements ISceneAddable
 	{
 		/**
-		 * 角色的X座标。
-		 */		
-		public var x:Number;
-		
-		/**
-		 * 角色的Y座标。
-		 */		
-		public var y:Number;
-		
-		/**
 		 * 角色的行走速度。
 		 */		
 		public var speed:Number;
@@ -129,7 +119,6 @@ package qrpg.display
 		
 		/**
 		 * 得到某角度下的方向值。
-		 * @private
 		 * @param angle 角度。
 		 * @param n 按几方向分。
 		 * @return 方向值。
