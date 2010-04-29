@@ -12,6 +12,13 @@ Application {
 	modalTransparencyColor: #000000;
 }
 
+TextInput {
+	borderStyle: inset;
+	borderColor: #000000;
+	backgroundColor: #444444;
+	olor: #ffffff;
+}
+
 Button {
 	fillAlphas: 1, 1, 1, 1;
 	fillColors: #000000, #333333, #333333, #666666;
@@ -41,54 +48,54 @@ TitleWindow {
 	fontWeight: normal;
 }
 RadioButton {
-   highlightAlphas: 0.5, 0;
-   fillAlphas: 1, 1, 1, 1;
-   fillColors: #000000, #333333, #333333, #666666;
-   borderColor: #000000;
-   iconColor: #ffffff;
-   color: #cccccc;
-   textSelectedColor: #ffffff;
-   textRollOverColor: #ffffff;
-   themeColor: #333333;
-   fontWeight: normal;
+	highlightAlphas: 0.5, 0;
+	fillAlphas: 1, 1, 1, 1;
+	fillColors: #000000, #333333, #333333, #666666;
+	borderColor: #000000;
+	iconColor: #ffffff;
+	color: #cccccc;
+	textSelectedColor: #ffffff;
+	textRollOverColor: #ffffff;
+	themeColor: #333333;
+	fontWeight: normal;
 }
 CheckBox {
-   fillAlphas: 1, 1, 1, 1;
-   fillColors: #000000, #333333, #333333, #666666;
-   borderColor: #000000;
-   iconColor: #ff0000;
-   color: #cccccc;
-   textSelectedColor: #ffffff;
-   textRollOverColor: #ffffff;
-   themeColor: #333333;
-   fontWeight: normal;
+	fillAlphas: 1, 1, 1, 1;
+	fillColors: #000000, #333333, #333333, #666666;
+	borderColor: #000000;
+	iconColor: #ff0000;
+	color: #cccccc;
+	textSelectedColor: #ffffff;
+	textRollOverColor: #ffffff;
+	themeColor: #333333;
+	fontWeight: normal;
 }
 List {
-   backgroundAlpha: 0.9;
-   backgroundColor: #333333;
-   rollOverColor: #777777;
-   textRollOverColor: #ffffff;
-   borderColor: #999999;
-   selectionColor: #666666;
-   color: #cccccc;
-   textSelectedColor: #ffffff;
+	backgroundAlpha: 0.9;
+	backgroundColor: #333333;
+	rollOverColor: #777777;
+	textRollOverColor: #ffffff;
+	borderColor: #999999;
+	selectionColor: #666666;
+	color: #cccccc;
+	textSelectedColor: #ffffff;
 }
 MenuBar {
-   backgroundColor: #000000;
-   borderColor: #000000;
-   fillAlphas: 1, 1;
-   fillColors: #000000, #333333;
-   rollOverColor: #000000;
-   selectionColor: #000000;
-   color: #ff9900;
-   textRollOverColor: #ffffff;
-   textSelectedColor: #ffffff;
-   themeColor: #000000;
+	backgroundColor: #000000;
+	borderColor: #000000;
+	fillAlphas: 1, 1;
+	fillColors: #000000, #333333;
+	rollOverColor: #000000;
+	selectionColor: #000000;
+	color: #ff9900;
+	textRollOverColor: #ffffff;
+	textSelectedColor: #ffffff;
+	themeColor: #000000;
 }
 MenuBar.List {
 	color: #ff9900;
 }
 HRule {
-   strokeColor: #999999;
-   strokeWidth: 1;
+	strokeColor: #999999;
+	strokeWidth: 1;
 }
