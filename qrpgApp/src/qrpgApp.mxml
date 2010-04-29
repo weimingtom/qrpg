@@ -49,24 +49,9 @@
 				var bmpData:BitmapData = new BitmapData(stage.stageWidth, stage.stageHeight, true, 0);
 				img.source = new Bitmap(bmpData);
 				
-				role.addEventListener(GameEvent.UPDATE, roleUpdateHandler);
 				addEventListener(Event.ENTER_FRAME, loop);
 				addEventListener(MouseEvent.CLICK, clickHandler);
 				addEventListener(Event.RESIZE, resizeHandler);
-			}
-			
-			private function roleUpdateHandler(evt:Event):void
-			{
-				var bmp:BitmapData = (img.source as Bitmap).bitmapData
-				var pic:BitmapData = role.displayData();
-				var rect:Rectangle = role.displayRect;
-				var dest:Point = role.displayPoint;
-				if ( roleRect ) bmp.fillRect(roleRect,0);
-				bmp.copyPixels(pic, rect, dest, null, null, false); 
-				roleRect = rect.clone();
-				roleRect.x = dest.x;
-				roleRect.y = dest.y;
-				role.isUpdate = false;
 			}
 			
 			private function clickHandler(evt:MouseEvent):void
@@ -77,6 +62,19 @@
 			private function loop(evt:Event):void
 			{
 				role.step();
+				if ( role.isUpdate )
+				{
+					var bmp:BitmapData = (img.source as Bitmap).bitmapData
+					var pic:BitmapData = role.displayData();
+					var rect:Rectangle = role.displayRect;
+					var dest:Point = role.displayPoint;
+					if ( roleRect ) bmp.fillRect(roleRect,0);
+					bmp.copyPixels(pic, rect, dest, null, null, false); 
+					roleRect = rect.clone();
+					roleRect.x = dest.x;
+					roleRect.y = dest.y;
+					role.isUpdate = false;
+				}
 			}
 			
 			private function resizeHandler(evt:Event):void
