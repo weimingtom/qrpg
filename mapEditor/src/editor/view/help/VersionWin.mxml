@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="240" height="160" title="版本" 
+	showCloseButton="true" close="end()" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import editor.core.Controler;
+			import editor.event.EventPool;
+			import editor.event.EditEvent;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			
+			private static var _win:VersionWin;
+			
+			public static function open():VersionWin
+			{
+				if ( !_win ) _win = new VersionWin();
+				if ( !_win.isPopUp )
+				{
+					PopUpManager.addPopUp(_win, Application.application as DisplayObject, true);
+					PopUpManager.centerPopUp(_win);
+				}
+				return _win;
+			}
+			
+			private function init():void
+			{
+				EventPool.addEventListener(EditEvent.RESIZE, resizeHandler);
+			}
+			
+			private function end():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function resizeHandler(evt:EditEvent):void
+			{
+				if ( this.isPopUp )
+				{
+					this.x = (Controler.getInstance().root.width-this.width)>>1;
+					this.y = (Controler.getInstance().root.height-this.height)>>1;
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Label x="65" y="59" text="版本：v2.0"/>
+</mx:TitleWindow>

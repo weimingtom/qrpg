@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ns1="com.tywin.mapEditor.wiew.menu.*"
-	 layout="absolute" fontSize="12" initialize="init()" width="800" height="600">
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml"
+	 layout="absolute" fontSize="12" initialize="init()" width="800" height="600" xmlns:menu="editor.view.menu.*">
 	<mx:Style source="skin/css.css"/>
 	<mx:Script>
 		<![CDATA[
-			import com.tywin.mapEditor.core.Controler;
+			import editor.core.Controler;
 			
 			private var ctrl:Controler;
 			
@@ -18,5 +18,5 @@
 		]]>
 	</mx:Script>
 	<mx:UIComponent id="sceneRoot" y="22" width="100%" height="100%"/>
-	<ns1:MainMenu/>
+	<menu:MainMenu/>
 </mx:WindowedApplication>
