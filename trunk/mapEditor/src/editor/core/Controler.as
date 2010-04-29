@@ -189,91 +189,79 @@ package editor.core
 		
 		private function orderHandler(evt:EditEvent):void
 		{
+			switch ( String(evt.data.@data) )
+			{
 			//新建文件
-			if ( evt.data.@data==OrderKey.NEW_SCENE_FILE )
-			{
+			case OrderKey.NEW_SCENE_FILE:
 				CreateEmptyScene.open();
-			}
+				break;
 			//打开文件。
-			else if ( evt.data.@data == OrderKey.OPEN_SCENE_FILE )
-			{
+			case OrderKey.OPEN_SCENE_FILE:
 				var fileCtrl:OpenSceneFileControler = new OpenSceneFileControler();
 				fileCtrl.openFile();
-			}
+				break;
 			//保存文件
-			else if ( evt.data.@data==OrderKey.SAVE_FILE )
-			{
+			case OrderKey.SAVE_FILE:
 				var save:SaveSceneXMLFile = new SaveSceneXMLFile(_scene.getXML());
 				save.save();
-			}
+				break;
 			//另存为
-			else if ( evt.data.@data==OrderKey.SAVE_AS )
-			{
+			case OrderKey.SAVE_AS:
 				var saveas:SaveSceneXMLFile = new SaveSceneXMLFile(_scene.getXML());
 				saveas.saveAs();
-			}
+				break;
 						
 			//撤消
-			else if ( evt.data.@data==OrderKey.UNDO )
-			{
+			case OrderKey.UNDO:
 				selected = null;
 				ActionList.undo();
-			}
+				break;
 			//重做
-			else if ( evt.data.@data==OrderKey.REDO )
-			{
+			case OrderKey.REDO:
 				selected = null;
 				ActionList.redo();
-			}
+				break;
 			//复制
-			else if ( evt.data.@data==OrderKey.COPY )
-			{
+			case OrderKey.COPY:
 				if ( selected ) clipboard = selected;
-			}
+				break;
 			//剪切
-			else if ( evt.data.@data==OrderKey.CUT )
-			{
+			case OrderKey.CUT:
 				if ( !selected ) return
 				clipboard = selected;
 				ActionList.addAction(new DeleteObject(clipboard));
-			}
+				break;
 			//粘贴
-			else if ( evt.data.@data==OrderKey.PASTE )
-			{
+			case OrderKey.PASTE:
 				if ( !clipboard ) return;
 				ActionList.addAction(new PasteObject(editLayer, clipboard));
-			}
+				break;
 			//删除
-			else if ( evt.data.@data==OrderKey.DELETE )
-			{
+			case OrderKey.DELETE:
 				if ( !selected ) return;
 				ActionList.addAction(new DeleteObject(selected));
-			}
+				break;
 			
 			//工具面板
-			else if ( evt.data.@data==OrderKey.TOOLS )
-			{
+			case OrderKey.TOOLS:
 				Tools.open();
-			}
+				break;
 			//属性面板
-			else if ( evt.data.@data==OrderKey.PROPERTY_WIN )
-			{
+			case OrderKey.PROPERTY_WIN:
 				PropertyWin.open();
-			}
+				break;
 			//资源面板
-			else if ( evt.data.@data==OrderKey.RESOURCE_WIN )
-			{
+			case OrderKey.RESOURCE_WIN:
 				ResourceWin.open();
-			}
+				break;
 			//版本信息。
-			else if ( evt.data.@data == OrderKey.VERSION_WIN )
-			{
+			case OrderKey.VERSION_WIN:
 				VersionWin.open();
-			}
+				break;
 			//测试
-			else if ( evt.data.@data=="test" )
-			{
+			case "test":
 				
+				break;
 			}
 		}
 		
