@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="350" height="150" title="创建新的场景物体" fontSize="12" showCloseButton="true" close="end()">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.SWFLoader;
+			import mx.controls.Image;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			
+			private static var _win:CreateSceneObject;
+			
+			public var src:String
+			
+			public static function open(src:String):CreateSceneObject
+			{
+				if ( !_win ) _win = new CreateSceneObject();
+				_win.src = src;
+				if ( !_win.isPopUp )
+				{
+					PopUpManager.addPopUp(_win, Application.application as DisplayObject, true);
+					PopUpManager.centerPopUp(_win);
+				}
+				return _win;
+			}
+			
+			private function end():void
+			{
+				PopUpManager.removePopUp(this);
+				_win = null;
+			}
+			
+			private function getPath():void
+			{
+				var file:File = new File(src);
+				try
+				{
+					file.browseForSave("Save As");
+					file.addEventListener(Event.SELECT, filePathSelectedHandler);
+				}
+				catch ( e:* )
+				{
+					trace("保存错误", e)
+				}
+			}
+			
+			private function filePathSelectedHandler(evt:Event):void
+			{
+				var path:String = (evt.target as File).nativePath;
+				if ( !path.match(/\.xml$/i) )
+				{
+					path += ".xml";
+				}
+				filePath.text = path;
+			}
+			
+			private function getPic():void
+			{
+				var file:File = new File(src);
+				var picType:FileFilter = new FileFilter("图片(.jpg, .jpeg, .gif, .png)", "*.jpg, *.jpeg, *.gif, *.png");
+				var swfType:FileFilter = new FileFilter("SWF(.swf)","*.swf")
+				try
+				{
+					file.browseForOpen("open", [picType, swfType]);
+					file.addEventListener(Event.SELECT, picPathSelectedHander)
+				}
+				catch ( e:* )
+				{
+					trace("文件错误",e);
+				}
+			}
+			
+			private function picPathSelectedHander(evt:Event):void
+			{
+				picPath.text = (evt.target as File).nativePath;
+			}
+			
+			private function create():void
+			{
+				trace("没到这？")
+				if ( filePath.text=="" || picPath.text=="" ) return;
+				trace("file", filePath.text)
+				trace("pic", picPath.text)
+				var file:File = new File(picPath.text);
+				var data:ByteArray = new ByteArray();
+				var stream:FileStream = new FileStream();
+				stream.open(file, FileMode.READ);
+				stream.readBytes(data);
+				
+				var permit:LoaderContext = new LoaderContext();
+				permit.allowLoadBytesCodeExecution = true;
+				var load:Loader = new Loader()
+				load.contentLoaderInfo.addEventListener(Event.COMPLETE, imgLoadCompeteHandler);
+				load.loadBytes(data,permit);
+			}
+			
+			private function imgLoadCompeteHandler(evt:Event):void
+			{
+				var _src:String;
+				var _width:int;
+				var _height:int;
+				var _x:int;
+				var _y:int;
+				var _cx:int;
+				var _cy:int;
+				
+				var load:Loader = (evt.target as LoaderInfo).loader;
+				_width = load.content.width;
+				_height = load.content.height;
+				_x = 0;
+				_y = 0;
+				_cx = load.content.width>>1;
+				_cy = load.content.height>>1;
+				
+				var arr:Array = filePath.text.split("\\");
+				arr.pop();
+				var path:String = arr.join("\\")+"\\";
+				_src = picPath.text.split(path).join("");
+				trace(_src)
+				trace("complete")
+				var xml:XML = <bldg>
+										<items>
+											<item src={_src}>
+												<actions>
+													<action type="stop" name="default" defaultAction="true">
+														<frame width={_width} height={_height} x={_x} y={_y} cx={_cx} cy={_cy}/>
+													</action>
+												</actions>
+											</item>
+										</items>
+										<hitarea>{-_cx},{-_cy},{_width-_cx},{-_cy},{_width-_cx},{_height-_cy},{-_cx},{_height-_cy}</hitarea>
+										<unwalk>{-_cx},{-_cy},{_width-_cx},{-_cy},{_width-_cx},{_height-_cy},{-_cx},{_height-_cy}</unwalk>
+									</bldg>
+				
+				
+				var file:File = new File(filePath.text);
+				var stream:FileStream = new FileStream();
+				stream.open(file, FileMode.WRITE);
+				stream.writeUTFBytes("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+				stream.writeUTFBytes(xml.toXMLString());
+				stream.close();
+				
+				end();
+				
+				SceneObjectEditorWin.open(filePath.text);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Label x="10" y="10" text="文件路径："/>
+	<mx:TextInput x="83" y="10" editable="false" id="filePath" width="177"/>
+	<mx:Button x="268" y="10" label="选择" click="getPath()"/>
+	
+	<mx:Label x="10" y="40" text="图片路径："/>
+	<mx:TextInput x="83" y="40" editable="false" id="picPath" width="177"/>
+	<mx:Button x="268" y="40" label="选择" click="getPic()"/>
+	<mx:Button x="109" y="72" label="创建" click="create()"/>
+	<mx:Button x="169" y="72" label="取消" click="end()"/>
+</mx:TitleWindow>

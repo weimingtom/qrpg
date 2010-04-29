@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="212" height="500" title="资源" showCloseButton="true" close="end()" creationComplete="init()" fontSize="12">
+	<mx:Script>
+		<![CDATA[
+			import editor.core.OrderKey;
+			import editor.modul.EditorModul;
+			import editor.event.EventPool;
+			import editor.view.menu.MainMenu;
+			import editor.core.Controler;
+			import editor.event.EditEvent;
+			import mx.controls.Alert;
+			import mx.controls.Tree;
+			import mx.events.ListEvent;
+			import mx.events.TreeEvent;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			private var fileData:XML;
+			
+			private static var _res:ResourceWin;
+			
+			public static function open():ResourceWin
+			{
+				if ( !_res ) _res = new ResourceWin();
+				if ( !_res.isPopUp )
+				{
+					_res.x = Controler.getInstance().root.width-_res.width;
+					_res.y = 22;
+					PopUpManager.addPopUp(_res, Application.application as DisplayObject);
+					MainMenu.menubarXML..order.(@data==OrderKey.RESOURCE_WIN).@toggled = true;
+				}
+				else
+				{
+					_res.end();
+				}
+				
+				return _res;
+			}
+			
+			public static function getInstance():ResourceWin
+			{
+				if ( !_res ) _res = new ResourceWin();
+				return _res;
+			}
+			
+			public function end():void
+			{
+				PopUpManager.removePopUp(this);
+				MainMenu.menubarXML..order.(@data==OrderKey.RESOURCE_WIN).@toggled = false;
+			}
+			
+			public function init():void
+			{
+				doubleClickEnabled = true;
+				EventPool.addEventListener(EditEvent.ORDER, orderHandler);
+				EventPool.addEventListener(EditEvent.RESIZE, resizeHandler);
+				EventPool.addEventListener(EditEvent.SCENE_XML_LOADED, sceneLoadedHandler);
+				createFileList();
+			}
+			
+			private function createFileList():void
+			{
+				if ( !EditorModul.sceneFilePath ) return;
+				var root:File = new File(EditorModul.sceneFilePath);
+				
+				fileData = <root/>;
+				try
+				{
+					var arr:Array = root.getDirectoryListing();
+					var tmpFile:File;
+					var i:int;
+					var len:int = arr.length;
+					for ( i=0; i<len; i++ )
+					{
+						tmpFile = arr[i] as File;
+						if ( tmpFile.type==null )
+						{
+							fileData.appendChild(<folder label={tmpFile.name} src={tmpFile.nativePath} isBranch="true"/>);
+						}
+					}
+					for ( i=0; i<len; i++ )
+					{
+						tmpFile = arr[i] as File;
+						if ( tmpFile.type==".xml" )
+						{
+							fileData.appendChild(<folder label={tmpFile.name} src={tmpFile.nativePath}/>);
+						}
+					}
+				}
+				catch ( e:* )
+				{
+					trace(e);
+				}
+				
+			}
+			
+			private function create():void
+			{
+				if ( tree && tree.selectedItem )
+				{
+					if (tree.selectedItem.@src.match(/\.xml$/i))
+					{
+						var arr:Array = tree.selectedItem.@src.split("\\");
+						arr.pop();
+						CreateSceneObject.open(arr.join("\\")+"\\");
+					}
+					else
+					{
+						CreateSceneObject.open(tree.selectedItem.@src);
+					}
+				}
+				else
+				{
+					Alert.show("未选择文件夹");
+				}
+			}
+			
+			private function modify():void
+			{
+				if ( !tree || !tree.selectedItem ) return;
+				if ( !tree.selectedItem.@src.match(/\.xml$/i) ) return;
+				SceneObjectEditorWin.open(String(tree.selectedItem.@src));
+			}
+			
+			private function del():void
+			{
+				if ( tree && tree.selectedItem )
+				{
+					if (tree.selectedItem.@src.match(/\.xml$/i))
+					{
+						var file:File = new File(tree.selectedItem.@src);
+						if ( file.exists )
+						{
+							file.deleteFile();
+						}
+					}
+					else
+					{
+						var folder:File = new File(tree.selectedItem.@src);
+						if ( folder.getDirectoryListing().length==0 )
+						{
+							folder.deleteDirectory();
+						}
+					}
+					var xml:XML = tree.selectedItem as XML;
+					xml.setName("del")
+					tree.selectedItem = null;
+					delete fileData..folder.del;
+					delete fileData.del;
+				}
+				else
+				{
+					Alert.show("未选择文件夹");
+				}
+			}
+			
+			private function refrash():void
+			{
+				createFileList();
+			}
+			
+			private function addToScene():void
+			{
+				new EditEvent(EditEvent.ADD_TO_SCENE, tree.selectedItem.@src).dispatch();
+			}
+			
+			//=========================
+			//                       Handler
+			//=========================
+			
+			private function orderHandler(evt:EditEvent):void
+			{
+				if ( evt.data.@data==OrderKey.RES_NEW )
+				{
+					create();
+				}
+				else if ( evt.data.@data==OrderKey.RES_MODIFY )
+				{
+					modify();
+				}
+				else if ( evt.data.@data==OrderKey.RES_DELETE )
+				{
+					del();
+				}
+				else if ( evt.data.@data==OrderKey.RES_REFRESH )
+				{
+					refrash();
+				}
+				else if ( evt.data.@data==OrderKey.RES_ADD )
+				{
+					addToScene();
+				}
+			}
+		
+			private function sceneLoadedHandler(evt:EditEvent):void
+			{
+				createFileList();
+			}
+			
+			private function itemOpenHandler(evt:TreeEvent):void
+			{
+				var folder:File = new File(evt.item.@src);
+				try
+				{
+					var arr:Array = folder.getDirectoryListing();
+					var xml:XML = evt.item as XML;
+					delete xml.folder;
+					var tmpFile:File;
+					var i:int;
+					var len:int = arr.length;
+					for ( i=0; i<len; i++ )
+					{
+						tmpFile = arr[i] as File;
+						if ( tmpFile.type==null )
+						{
+							xml.appendChild(<folder label={tmpFile.name} src={tmpFile.nativePath} isBranch="true"/>)
+						}
+					}
+					for ( i=0; i<len; i++ )
+					{
+						tmpFile = arr[i] as File;
+						if ( tmpFile.type==".xml" )
+						{
+							xml.appendChild(<folder label={tmpFile.name} src={tmpFile.nativePath}/>)
+						}
+					}
+				}
+				catch ( e:* )
+				{
+					trace(e);
+				}
+			}
+			
+			private function doubleClickHandler(evt:MouseEvent):void
+			{
+				trace("双击");
+			}
+			
+			private function itemClickHandler(evt:ListEvent):void
+			{
+				var selectedFile:File = new File(tree.selectedItem.@src);
+				try
+				{
+					var stream:FileStream = new FileStream();
+					stream.open(selectedFile, FileMode.READ);
+					var xml:XML = new XML(stream.readUTFBytes(stream.bytesAvailable));
+					if ( xml )
+					{
+						if ( xml.name().toString()=="bldg" )
+						{
+							var arr:Array = selectedFile.nativePath.split("\\");
+							arr.pop();
+							var url:String = arr.join("\\")+"\\"+xml..item[0].@src;
+							preview.source = url;
+						}
+						else
+						{
+							preview.source = null;
+						}
+					}
+				}
+				catch ( e:* )
+				{
+					preview.source = null;
+				}
+			}
+			
+			private function resizeHandler(evt:EditEvent):void
+			{
+				if ( isPopUp )
+				{
+					this.x = Controler.getInstance().root.width-_res.width;
+					this.y = 22;
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Tree x="10" y="110" width="172" height="274" id="tree"
+		dataProvider="{fileData}" labelField="@label" showRoot="false" 
+		itemOpen="itemOpenHandler(event)" doubleClick="doubleClickHandler(event)" itemClick="itemClickHandler(event)"/>
+	<mx:Button x="10" y="392" label="新建" click="create()"/>
+	<mx:Button x="70" y="392" label="修改" click="modify()"/>
+	<mx:Button x="130" y="392" label="删除" click="del()"/>
+	<mx:Button x="10" y="424" label="刷新" click="refrash()"/>
+	<mx:Button x="70" y="424" label="添加" click="addToScene()"/>
+	<mx:VBox x="10" y="10" width="172" height="92" horizontalAlign="center" verticalAlign="middle">
+		<mx:SWFLoader id="preview" scaleContent="true" height="100%" width="100%"/>
+	</mx:VBox>
+</mx:TitleWindow>
