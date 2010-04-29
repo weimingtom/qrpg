@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="500" height="160" fontSize="12" showCloseButton="true" title="属性" 
+	creationComplete="init()" close="end()">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.ComboBox;
+			import mx.collections.ArrayCollection;
+			import com.tywin.mapEditor.modul.EditorModul;
+			import com.tywin.mapEditor.wiew.resourcewin.SceneObjectEditorWin;
+			import com.tywin.mapEditor.rpg.SceneObject;
+			import com.tywin.mapEditor.event.EditEvent;
+			import com.tywin.mapEditor.event.EventPool;
+			
+			import com.tywin.mapEditor.core.Controler;
+			import com.tywin.mapEditor.core.OrderKey;
+			import com.tywin.mapEditor.wiew.menu.MainMenu;
+			
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			
+			private static var _prowin:PropertyWin;
+			
+			[Bindable]
+			private static var selected:SceneObject;
+			
+			public static function open():PropertyWin
+			{
+				if ( !_prowin ) _prowin = new PropertyWin();
+				if ( !_prowin.isPopUp )
+				{
+					_prowin.x = (Controler.getInstance().root.width-_prowin.width)/2;
+					_prowin.y = Controler.getInstance().root.height-_prowin.height;
+					PopUpManager.addPopUp(_prowin, Application.application as DisplayObject);
+					MainMenu.menubarXML..order.(@data==OrderKey.PROPERTY_WIN).@toggled = true;
+				}
+				else
+				{
+					_prowin.end();
+				}
+				
+				return _prowin;
+			}
+			
+			public function end():void
+			{
+				PopUpManager.removePopUp(this);
+				MainMenu.menubarXML..order.(@data==OrderKey.PROPERTY_WIN).@toggled = false;
+			}
+			
+			private function init():void
+			{
+				EventPool.addEventListener(EditEvent.SELECTED_CHANGE, selectedChangeHandler);
+				EventPool.addEventListener(EditEvent.RESIZE, resizeHandler);
+				selectedChangeHandler();
+			}
+			
+			private function getText(obj:SceneObject, pro:String):String
+			{
+				return String(obj[pro]);
+			}
+			
+			private function changeProperty(pro:String, evt:FocusEvent):void
+			{
+				if ( selected[pro] is String )
+				{
+					if ( selected[pro]!=evt.target.text )
+						selected[pro] = evt.target.text;
+				}
+				else if ( selected[pro] is Number )
+				{
+					if ( selected[pro]!=Number(evt.target.text) )
+						selected[pro] = Number(evt.target.text);
+				}
+				selected[pro] = evt.target.text;
+			}
+			
+			private function modify():void
+			{
+				var obj:SceneObject = Controler.getInstance().selected;
+				if ( obj )
+				{
+					SceneObjectEditorWin.open(obj.getXML());
+					EventPool.addEventListener(EditEvent.SCENE_OBJECT_EDIT_SAVE, onModifySaveHandler);
+				}
+			}
+			
+			private function copy():void
+			{
+				
+			}
+			
+			private function del():void
+			{
+				
+			}
+			
+			private function selectedChangeHandler(evt:EditEvent=null):void
+			{
+				selected = Controler.getInstance().selected;
+				if ( selected is SceneObject )
+				{
+					proView.selectedChild = sceneObject;
+				}
+				else if ( selected==null )
+				{
+					proView.selectedChild = nothing;
+				}
+			}
+			
+			private function resizeHandler(evt:EditEvent):void
+			{
+				if ( isPopUp )
+				{
+					this.x = (Controler.getInstance().root.width-this.width)/2;
+					this.y = Controler.getInstance().root.height-this.height;
+				}
+			}
+			
+			private function onKeyDownHandler(evt:KeyboardEvent):void
+			{
+				if ( evt.charCode==13 )
+				{
+					stage.focus = null;
+					stage.focus = evt.target as InteractiveObject;
+				}
+			}
+			
+			private function onModifySaveHandler(evt:EditEvent):void
+			{
+				var xml:XML = new XML(evt.data);
+				selected.rebuildByXML(xml);
+				
+			}
+			
+			private function getSelectIndex(obj:SceneObject):int
+			{
+				var i:int
+				var len:int = EditorModul.company.length;
+				for ( i=1; i<len; i++ )
+				{
+					if ( EditorModul.company[i].code==obj.comany )
+					{
+						return i;
+					}
+				}
+				return 0;
+			}
+			
+			private function companyChangeHandler():void
+			{
+				trace("设置code", companySelect.selectedItem.code)
+				selected.comany = companySelect.selectedItem.code;
+				trace("boj",selected.comany)
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:ViewStack x="0" y="0" id="proView" width="480" height="118">
+		<mx:Canvas id="nothing" label="selectNothing" width="100%" height="100%">
+			<mx:Label x="10" y="10" text="现在没有选中任何物体"/>
+		</mx:Canvas>
+		<mx:Canvas id="sceneObject" label="sceneObject" width="100%" height="100%">
+			<mx:Label x="10" y="10" text="物体名称"/>
+			<mx:TextInput x="10" y="38" width="200" id="objName" text="{getText(selected, 'objName')}" 
+				focusOut="changeProperty('objName', event)" keyDown="onKeyDownHandler(event)"/>
+			<mx:Label x="10" y="72" text="X："/>
+			<mx:TextInput x="38" y="70" width="50" id="objX" text="{getText(selected, 'x')}" 
+				focusOut="changeProperty('x', event)" keyDown="onKeyDownHandler(event)"/>
+			<mx:Label x="132" y="72" text="Y："/>
+			<mx:TextInput x="160" y="70" width="50" id="objY" text="{getText(selected, 'y')}" 
+				focusOut="changeProperty('y', event)" keyDown="onKeyDownHandler(event)"/>
+			<mx:Button x="238" y="38" label="事件" click="EventWin.open()"/>
+			<mx:Button x="298" y="38" label="修改" click="modify()"/>
+			<mx:Button x="358" y="38" label="复制" click="copy()"/>
+			<mx:Button x="418" y="38" label="删除" click="del()"/>
+			<mx:Label x="238" y="72" text="所属企业"/>
+			<mx:ComboBox id="companySelect" x="299" y="69" width="171" dataProvider="{EditorModul.company}" selectedIndex="{getSelectIndex(selected)}" change="companyChangeHandler()"/>
+		</mx:Canvas>
+	</mx:ViewStack>
+</mx:TitleWindow>

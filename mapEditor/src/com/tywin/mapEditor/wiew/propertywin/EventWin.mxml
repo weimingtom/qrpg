@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" width="640" height="480" title="事件编辑" fontSize="12" 
+	showCloseButton="true" close="end()" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			
+			import com.tywin.mapEditor.event.EditEvent;
+			import com.tywin.mapEditor.event.EventPool;
+			import com.tywin.mapEditor.core.Controler;
+			import com.tywin.mapEditor.rpg.SceneObject;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var selected:SceneObject = Controler.getInstance().selected;
+			
+			[Bindable]
+			private var list:ArrayCollection = new ArrayCollection([{label:"不可点击",data:"none"},
+																						{label:"移至目的后发布",data:"move"},
+																						{label:"点击后发布事件",data:"dispatch"},
+																						{label:"移动并发布事件",data:"moveDispatch"}]);
+			
+			private static var _eventWin:EventWin;
+			
+			public static function open():EventWin
+			{
+				if ( !_eventWin ) _eventWin = new EventWin();
+				if ( !_eventWin.isPopUp )
+				{
+					PopUpManager.addPopUp(_eventWin, Application.application as DisplayObject, true);
+					PopUpManager.centerPopUp(_eventWin);
+					//MainMenu.menubarXML..order.(@data==OrderKey.RESOURCE_WIN).@toggled = true;
+				}
+				else
+				{
+					//_eventWin.end();
+				}
+				
+				return _eventWin;
+			}
+			
+			public function end():void
+			{
+				PopUpManager.removePopUp(this);
+				//MainMenu.menubarXML..order.(@data==OrderKey.RESOURCE_WIN).@toggled = false;
+				_eventWin = null;
+			}
+			
+			private function init():void
+			{
+				EventPool.addEventListener(EditEvent.RESIZE, resizeHandler);
+			}
+			
+			private function getScript(obj:SceneObject):String
+			{
+				if ( !obj ) return "";
+				return obj.script;
+			}
+			
+			private function getScriptType(obj:SceneObject):int
+			{
+				if ( !obj ) return 0;
+				if ( obj.scriptType=="move" ) return 1;
+				if ( obj.scriptType=="dispatch" ) return 2;
+				if ( obj.scriptType=="moveDispatch" ) return 3;
+				return 0;
+			}
+			
+			private function conform():void
+			{
+				selected.script = script.text;
+				selected.scriptType = scriptType.selectedItem.data;
+				end();
+			}
+			
+			private function resizeHandler(evt:EditEvent):void
+			{
+				if ( isPopUp )
+				{
+					this.x = (Controler.getInstance().root.width-this.width)>>1;
+					this.y = (Controler.getInstance().root.height-this.height)>>1;
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Label x="10" y="10" text="事件类型"/>
+	<mx:ComboBox x="71" y="7" id="scriptType" dataProvider="{list}" selectedIndex="{getScriptType(selected)}"/>
+	<mx:TextArea x="10" y="38" width="600" height="358" id="script" text="{getScript(selected)}"/>
+	<mx:Button x="498" y="404" label="关闭" click="end()"/>
+	<mx:Button x="558" y="404" label="确定" click="conform()"/>
+	
+</mx:TitleWindow>
