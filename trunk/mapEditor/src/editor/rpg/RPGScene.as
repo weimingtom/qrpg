@@ -67,23 +67,6 @@ package editor.rpg
 			_bgpic.nodeHeight = Number(xml.@nodeheight);
 			_bgpic.src = xml.@filesrc;
 			
-			//临时企业数据
-			var tmpObj:Object;
-			var coms:XMLList = xml.companys.company;
-			
-			var i:int;
-			var len:int = coms.length();
-			if ( len>0 )
-			{
-				EditorModul.exhibitCode = xml.companys.@exhibitCode;
-				EditorModul.sceneCode = xml.companys.@sceneCode;
-				EditorModul.company = new ArrayCollection([{label:"不属于任何企业", code:"null"}]);
-				for ( i=0; i<len; i++ )
-				{
-					EditorModul.company.addItem({label:coms[i].toString(), code:coms[i].@code});
-				}
-			}
-			
 			//背景层
 			_bg.build(XML(xml.bg));
 			
@@ -108,20 +91,6 @@ package editor.rpg
 		{
 			var xml:XML =<scene width={_bgpic.widthPic} height={_bgpic.heightPic} nodewidth={_bgpic.nodeWidth} nodeheight={_bgpic.nodeHeight} filesrc={_bgpic.src}/>
 			var tmpXML:XML;
-			
-			//展的𥊤临时信息
-			trace(EditorModul.sceneCode)
-			if ( EditorModul.sceneCode )
-			{
-				var exhibitXML:XML = <companys exhibitCode={EditorModul.exhibitCode} sceneCode={EditorModul.sceneCode}/>
-				var i:int;
-				var len:int = EditorModul.company.length;
-				for ( i=1; i<len; i++ )
-				{
-					exhibitXML.appendChild(<company code={EditorModul.company[i].code}>{EditorModul.company[i].label}</company>);
-				}
-				xml.appendChild(exhibitXML);
-			}
 			
 			//不可走区域
 			xml.appendChild(tMPuNWALK);

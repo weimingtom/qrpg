@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scene width="1" height="1" nodewidth="2400" nodeheight="2400" filesrc="bg.jpg">
+  <unwalk/>
+  <bg/>
+  <main>
+    <bldg x="836" y="1004" name="null">
+      <items>
+        <item src="image141.png">
+          <actions>
+            <action type="stop" name="default" defaultAction="true">
+              <frame width="312" height="312" x="0" y="0" cx="143" cy="235"/>
+            </action>
+          </actions>
+        </item>
+      </items>
+      <hitarea>-8,60,-123,12,-129,-127,-90,-208,-41,-235,87,-170,125,-105,114,7</hitarea>
+      <unwalk>-134,2,-3,-57,113,-2,-9,58</unwalk>
+    </bldg>
+    <bldg x="1074" y="860" name="null">
+      <items>
+        <item src="image141.png">
+          <actions>
+            <action type="stop" name="default" defaultAction="true">
+              <frame width="312" height="312" x="0" y="0" cx="143" cy="235"/>
+            </action>
+          </actions>
+        </item>
+      </items>
+      <hitarea>-8,60,-123,12,-129,-127,-90,-208,-41,-235,87,-170,125,-105,114,7</hitarea>
+      <unwalk>-134,2,-3,-57,113,-2,-9,58</unwalk>
+    </bldg>
+  </main>
+  <front/>
+</scene>

@@ -4,12 +4,6 @@ package editor.modul
 	
 	public class EditorModul
 	{
-		[Bindable]
-		public static var company:ArrayCollection;
-		
-		public static var exhibitCode:String;
-		public static var sceneCode:String;
-		
 		private static var _fileName:String;
 		public static function get fileName():String
 		{

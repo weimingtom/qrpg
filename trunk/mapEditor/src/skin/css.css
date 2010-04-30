@@ -25,9 +25,17 @@ Button {
 	color: #cccccc;
 	textRollOverColor: #ffffff;
 	borderColor: #000000;
-	themeColor: #333333;
-	textSelectedColor: #FFFFFF;
+	themeColor: #000000;
+	textSelectedColor: #333333;
 	fontWeight: normal;
+}
+Alert {
+	borderStyle: solid;
+	cornerRadius: 6;
+	backgroundAlpha: 0.8;
+	backgroundColor: #000000;
+	buttonStyleName: Button;
+	
 }
 Panel {
 	borderColor: #000000;
@@ -36,10 +44,14 @@ Panel {
 	cornerRadius: 6;
 	backgroundAlpha: 0.9;
 	backgroundColor: #333333;
-	titleStyleName: "mypanelTitle";
+	titleStyleName: mypanelTitle;
 }
 TitleWindow {
 	backgroundColor: #333333;
+	closeButtonUpSkin: Embed(source="css.swf",symbol="closeNormal");
+	closeButtonOverSkin: Embed(source="css.swf",symbol="closeOver");
+	closeButtonDownSkin: Embed(source="css.swf",symbol="closeOver");
+	closeButtonDisabledSkin: Embed(source="css.swf",symbol="closeOver");
 }
 .mypanelTitle {
 	color: #ffffff;
