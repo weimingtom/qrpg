@@ -59,6 +59,7 @@
 			
 			private function changeProperty(pro:String, evt:FocusEvent):void
 			{
+				if ( !selected ) return;
 				if ( selected[pro] is String )
 				{
 					if ( selected[pro]!=evt.target.text )
@@ -69,7 +70,7 @@
 					if ( selected[pro]!=Number(evt.target.text) )
 						selected[pro] = Number(evt.target.text);
 				}
-				selected[pro] = evt.target.text;
+				//selected[pro] = evt.target.text;
 			}
 			
 			private function modify():void
@@ -130,27 +131,6 @@
 				
 			}
 			
-			private function getSelectIndex(obj:SceneObject):int
-			{
-				var i:int
-				var len:int = EditorModul.company.length;
-				for ( i=1; i<len; i++ )
-				{
-					if ( EditorModul.company[i].code==obj.comany )
-					{
-						return i;
-					}
-				}
-				return 0;
-			}
-			
-			private function companyChangeHandler():void
-			{
-				trace("设置code", companySelect.selectedItem.code)
-				selected.comany = companySelect.selectedItem.code;
-				trace("boj",selected.comany)
-			}
-			
 		]]>
 	</mx:Script>
 	<mx:ViewStack x="0" y="0" id="proView" width="480" height="118">
@@ -171,8 +151,6 @@
 			<mx:Button x="298" y="38" label="修改" click="modify()"/>
 			<mx:Button x="358" y="38" label="复制" click="copy()"/>
 			<mx:Button x="418" y="38" label="删除" click="del()"/>
-			<mx:Label x="238" y="72" text="所属企业"/>
-			<mx:ComboBox id="companySelect" x="299" y="69" width="171" dataProvider="{EditorModul.company}" selectedIndex="{getSelectIndex(selected)}" change="companyChangeHandler()"/>
 		</mx:Canvas>
 	</mx:ViewStack>
 </mx:TitleWindow>
