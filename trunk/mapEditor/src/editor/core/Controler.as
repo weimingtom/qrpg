@@ -10,7 +10,7 @@ package editor.core
 	import editor.core.subControler.SaveSceneXMLFile;
 	import editor.event.EditEvent;
 	import editor.event.EventPool;
-	import editor.modul.EditorModul;
+	import editor.modul.ModulProxy;
 	import editor.rpg.AreaSprite;
 	import editor.rpg.BackGroundPic;
 	import editor.rpg.GameLayer;
@@ -83,7 +83,11 @@ package editor.core
 		public function set root(doc:DisplayObjectContainer):void
 		{
 			_root = doc;
-			_root && _root.addEventListener(Event.RESIZE, resizeHandler);
+			if ( _root )
+			{
+				_root.addEventListener(Event.RESIZE, resizeHandler);
+				_root.addEventListener(MouseEvent.CLICK, mouseClickHandler);
+			}
 		}
 		public function get root():DisplayObjectContainer
 		{
@@ -114,7 +118,6 @@ package editor.core
 			}
 			if ( obj )
 			{
-				trace(obj.comany)
 				_selected = obj;
 				_selected.filters = [redBorder];
 				MainMenu.menubarXML.order.(@data==OrderKey.COPY).@enabled = true;
@@ -321,9 +324,9 @@ package editor.core
 			var arr:Array = src.split("\\");
 			var xmlFileName:String = String(arr.pop());
 			var xmlFilePath:String = arr.join("\\")+"\\";
-			var picFullSrc:String = xmlFilePath+xml..item.@src;
-			var picWriteSrc:String = picFullSrc.split(EditorModul.sceneFilePath).join("").split("\\").join("/");
-			xml..item.@src = picWriteSrc;
+			var picFullSrc:String = xmlFilePath+xml.@src;
+			var picWriteSrc:String = picFullSrc.split(ModulProxy.sceneFilePath).join("").split("\\").join("/");
+			xml.@src = picWriteSrc;
 			
 			var rect:Rectangle = new Rectangle();
 			rect.x = Number(xml..frame.@x);
@@ -350,6 +353,11 @@ package editor.core
 				_scene.resize(_root.width, _root.height);
 			}
 			new EditEvent(EditEvent.RESIZE).dispatch();
+		}
+		
+		private function mouseClickHandler(evt:MouseEvent):void
+		{
+			if ( _root.stage ) _root.stage.focus = null;
 		}
 		
 		//Mouse Handler

@@ -3,6 +3,7 @@
 	width="212" height="500" title="资源" showCloseButton="true" close="end()" creationComplete="init()" fontSize="12">
 	<mx:Script>
 		<![CDATA[
+			import editor.modul.ModulProxy;
 			import editor.core.OrderKey;
 			import editor.modul.EditorModul;
 			import editor.event.EventPool;
@@ -62,11 +63,20 @@
 			
 			private function createFileList():void
 			{
-				if ( !EditorModul.sceneFilePath ) return;
-				var root:File = new File(EditorModul.sceneFilePath);
-				
-				fileData = <root/>;
-				try
+				if ( EditorModul.resource )
+				{
+					var xml:XML = EditorModul.resource.copy();
+					var xmlList:XMLList = xml..item;
+					var i:int;
+					var len:int = xmlList.length();
+					for ( i=0; i<len; i++ )
+					{
+						xmlList[0] = <item label={xmlList[0].@id} src={ModulProxy.sceneFilePath + xmlList[0].@src}/>
+					}
+					fileData = <root/>;
+					fileData.appendChild(xml.children());
+				}
+/* 				try
 				{
 					var arr:Array = root.getDirectoryListing();
 					var tmpFile:File;
@@ -93,7 +103,7 @@
 				{
 					trace(e);
 				}
-				
+ */				
 			}
 			
 			private function create():void
@@ -126,6 +136,7 @@
 			
 			private function del():void
 			{
+				
 				if ( tree && tree.selectedItem )
 				{
 					if (tree.selectedItem.@src.match(/\.xml$/i))
@@ -199,40 +210,6 @@
 				createFileList();
 			}
 			
-			private function itemOpenHandler(evt:TreeEvent):void
-			{
-				var folder:File = new File(evt.item.@src);
-				try
-				{
-					var arr:Array = folder.getDirectoryListing();
-					var xml:XML = evt.item as XML;
-					delete xml.folder;
-					var tmpFile:File;
-					var i:int;
-					var len:int = arr.length;
-					for ( i=0; i<len; i++ )
-					{
-						tmpFile = arr[i] as File;
-						if ( tmpFile.type==null )
-						{
-							xml.appendChild(<folder label={tmpFile.name} src={tmpFile.nativePath} isBranch="true"/>)
-						}
-					}
-					for ( i=0; i<len; i++ )
-					{
-						tmpFile = arr[i] as File;
-						if ( tmpFile.type==".xml" )
-						{
-							xml.appendChild(<folder label={tmpFile.name} src={tmpFile.nativePath}/>)
-						}
-					}
-				}
-				catch ( e:* )
-				{
-					trace(e);
-				}
-			}
-			
 			private function doubleClickHandler(evt:MouseEvent):void
 			{
 				trace("双击");
@@ -240,28 +217,12 @@
 			
 			private function itemClickHandler(evt:ListEvent):void
 			{
-				var selectedFile:File = new File(tree.selectedItem.@src);
-				try
+				var src:String = String(tree.selectedItem.@src);
+				if ( src )
 				{
-					var stream:FileStream = new FileStream();
-					stream.open(selectedFile, FileMode.READ);
-					var xml:XML = new XML(stream.readUTFBytes(stream.bytesAvailable));
-					if ( xml )
-					{
-						if ( xml.name().toString()=="bldg" )
-						{
-							var arr:Array = selectedFile.nativePath.split("\\");
-							arr.pop();
-							var url:String = arr.join("\\")+"\\"+xml..item[0].@src;
-							preview.source = url;
-						}
-						else
-						{
-							preview.source = null;
-						}
-					}
+					preview.source = src;
 				}
-				catch ( e:* )
+				else
 				{
 					preview.source = null;
 				}
@@ -280,7 +241,7 @@
 	</mx:Script>
 	<mx:Tree x="10" y="110" width="172" height="274" id="tree"
 		dataProvider="{fileData}" labelField="@label" showRoot="false" 
-		itemOpen="itemOpenHandler(event)" doubleClick="doubleClickHandler(event)" itemClick="itemClickHandler(event)"/>
+		doubleClick="doubleClickHandler(event)" itemClick="itemClickHandler(event)"/>
 	<mx:Button x="10" y="392" label="新建" click="create()"/>
 	<mx:Button x="70" y="392" label="修改" click="modify()"/>
 	<mx:Button x="130" y="392" label="删除" click="del()"/>

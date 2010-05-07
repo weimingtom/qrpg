@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="640" height="480" 
+	title="查看场景XML" showCloseButton="true" close="end()" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import editor.core.Controler;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			
+			private static var _instance:SceneXMLView;
+			
+			public static function open():SceneXMLView
+			{
+				if ( !_instance )
+				{
+					_instance = new SceneXMLView();
+				}
+				if ( !_instance.isPopUp )
+				{
+					PopUpManager.addPopUp(_instance, Application.application as DisplayObject, true);
+					PopUpManager.centerPopUp(_instance);
+				}
+				return _instance;
+			}
+			
+			private function end():void
+			{
+				if ( _instance && _instance.isPopUp )
+				{
+					PopUpManager.removePopUp(_instance);
+				}
+				_instance = null;
+			}
+			
+			private function init():void
+			{
+				var xml:XML = Controler.getInstance().scene.getXML();
+				txt.text = xml.toXMLString();
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:TextArea id="txt" x="10" y="10" width="600" height="418"/>
+</mx:TitleWindow>

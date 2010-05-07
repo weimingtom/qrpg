@@ -1,7 +1,7 @@
 package editor.core.subControler
 {
 	import editor.event.EditEvent;
-	import editor.modul.EditorModul;
+	import editor.modul.ModulProxy;
 	
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -43,7 +43,7 @@ package editor.core.subControler
 			var stream:FileStream = new FileStream();
 			stream.open(evt.target as File, FileMode.READ);
 			var fileData:String = stream.readUTFBytes(stream.bytesAvailable);
-			EditorModul.sceneFilePath = file.nativePath;
+			ModulProxy.sceneFilePath = file.nativePath;
 			new EditEvent(EditEvent.SCENE_XML_LOADED, new XML(fileData)).dispatch();
 			
 		}
@@ -54,7 +54,7 @@ package editor.core.subControler
 			var stream:FileStream = new FileStream();
 			stream.open(file, FileMode.READ);
 			var fileData:String = stream.readUTFBytes(stream.bytesAvailable);
-			EditorModul.sceneFilePath = file.nativePath;
+			ModulProxy.sceneFilePath = file.nativePath;
 			new EditEvent(EditEvent.SCENE_XML_LOADED, new XML(fileData)).dispatch();
 		}
 

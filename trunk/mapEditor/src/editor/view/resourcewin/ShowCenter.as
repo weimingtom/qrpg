@@ -6,9 +6,9 @@ package editor.view.resourcewin
 	
 	/**
 	 * 中间点数据发生变动时发布。
-	 * @eventType com.tywin.mapEditor.event.EditEvent.CENTER_CHANGE
+	 * @eventType editor.event.EditEvent.CENTER_CHANGE
  	 */
-	[Event(name="centerChage", type="com.tywin.mapEditor.event.EditEvent")]
+	[Event(name="centerChage", type="editor.event.EditEvent")]
 	
 	/**
 	 * 设置并显示物体中心点。

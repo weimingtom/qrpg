@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bldg>
-  <items>
-    <item src="image141.png">
-      <actions>
-        <action type="stop" name="default" defaultAction="true">
-          <frame width="312" height="312" x="0" y="0" cx="143" cy="235"/>
-        </action>
-      </actions>
-    </item>
-  </items>
-  <hitarea>-8,60,-123,12,-129,-127,-90,-208,-41,-235,87,-170,125,-105,114,7</hitarea>
-  <unwalk>-134,2,-3,-57,113,-2,-9,58</unwalk>
-</bldg>
+<item src="image141.png">
+	<actions>
+		<action type="stop" name="default" defaultAction="true">
+			<frame width="312" height="312" x="0" y="0" cx="143" cy="235"/>
+		</action>
+	</actions>
+	<hitarea>-8,60,-123,12,-129,-127,-90,-208,-41,-235,87,-170,125,-105,114,7</hitarea>
+	<unwalk>-134,2,-3,-57,113,-2,-9,58</unwalk>
+</item>

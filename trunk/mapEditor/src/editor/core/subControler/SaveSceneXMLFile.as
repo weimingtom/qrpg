@@ -1,6 +1,6 @@
 package editor.core.subControler
 {
-	import editor.modul.EditorModul;
+	import editor.modul.ModulProxy;
 	
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -18,7 +18,7 @@ package editor.core.subControler
 		
 		public function save():void
 		{
-			var file:File = new File(EditorModul.sceneFilePath+EditorModul.fileName);
+			var file:File = new File(ModulProxy.sceneFilePath + ModulProxy.fileName);
 			var stream:FileStream = new FileStream();
 			stream.open(file, FileMode.WRITE);
 			stream.writeUTFBytes("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
@@ -28,7 +28,7 @@ package editor.core.subControler
 		
 		public function saveAs():void
 		{
-			var file:File = new File(EditorModul.sceneFilePath);
+			var file:File = new File(ModulProxy.sceneFilePath);
 			try
 			{
 				file.browseForSave("另存为");

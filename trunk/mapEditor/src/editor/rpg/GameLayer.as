@@ -1,5 +1,7 @@
 package editor.rpg
 {
+	import editor.modul.ModulProxy;
+	
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -46,25 +48,29 @@ package editor.rpg
 		
 		public function build(xml:XML):void
 		{
+			var resourceXML:XML;
 			var tmpSO:SceneObject;
 			var tmpXML:XML;
 			var tmpRect:Rectangle;
 			var tmpPoint:Point;
+			
 			for ( var str:String in xml.children() )
 			{
 				tmpXML = xml.children()[str];
-				tmpRect = new Rectangle(Number(tmpXML..frame.@x), Number(tmpXML..frame.@y), Number(tmpXML..frame.@width), Number(tmpXML..frame.@height))
-				tmpPoint = new Point(Number(tmpXML..frame.@cx), Number(tmpXML..frame.@cy));
+				resourceXML = ModulProxy.getResource(String(tmpXML.@source));
+				tmpRect = new Rectangle(Number(resourceXML..frame.@x), Number(resourceXML..frame.@y), Number(resourceXML..frame.@width), Number(resourceXML..frame.@height))
+				tmpPoint = new Point(Number(resourceXML..frame.@cx), Number(resourceXML..frame.@cy));
 				
-				tmpSO = new SceneObject(tmpXML..item.@src, tmpRect, tmpPoint);
+				tmpSO = new SceneObject(resourceXML.@src, tmpRect, tmpPoint);
 				tmpSO.gameLayer = this;
 				
 				tmpSO.x = Number(tmpXML.@x);
 				tmpSO.y = Number(tmpXML.@y);
 				tmpSO.objName = tmpXML.@name;
-				tmpSO.comany = tmpXML.@company;
-				if ( tmpXML.hitarea.toString() ) tmpSO.hitAreaData = tmpXML.hitarea.toString().split(",");
-				if ( tmpXML.unwalk.toString() ) tmpSO.unwalkData = tmpXML.unwalk.toString().split(",");
+				tmpSO.source = tmpXML.@source;
+				
+				if ( resourceXML.hitarea.toString() ) tmpSO.hitAreaData = resourceXML.hitarea.toString().split(",");
+				if ( resourceXML.unwalk.toString() ) tmpSO.unwalkData = resourceXML.unwalk.toString().split(",");
 				if ( tmpXML.script.toString() )
 				{
 					tmpSO.script = tmpXML.script.toString();
@@ -81,14 +87,16 @@ package editor.rpg
 			var i:int;
 			var len:int;
 			
+			//场景里的建筑
 			arr = _unloadObj.values();
-			len = arr.length;
+			/* len = arr.length;
 			for ( i=0; i<len; i++ )
 			{
 				xml.appendChild((arr[i] as SceneObject).getXML());
-			}
+			} */
 			
-			arr = _inScreenObj.values();
+			arr = arr.concat(_inScreenObj.values());
+			arr.sort(sortByY);
 			len = arr.length;
 			for ( i=0; i<len; i++ )
 			{
@@ -187,6 +195,22 @@ package editor.rpg
 			{
 				_unloadObj.put(_obj, _obj);
 				unshowObject(_obj);
+			}
+		}
+		
+		private function sortByY(a:SceneObject, b:SceneObject):int
+		{
+			if ( a.y>b.y )
+			{
+				return 1;
+			}
+			else if ( a.y<b.y )
+			{
+				return -1;
+			}
+			else
+			{
+				return 0;
 			}
 		}
 		

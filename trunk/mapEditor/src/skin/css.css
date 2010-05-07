@@ -18,6 +18,11 @@ TextInput {
 	backgroundColor: #444444;
 	olor: #ffffff;
 }
+TextArea {
+   color: #ffffff;
+   backgroundColor: #333333;
+   borderColor: #666666;
+}
 
 Button {
 	fillAlphas: 1, 1, 1, 1;
@@ -82,12 +87,15 @@ CheckBox {
 	themeColor: #333333;
 	fontWeight: normal;
 }
+ComboBox {
+   iconColor: #ffffff;
+}
 List {
 	backgroundAlpha: 0.9;
 	backgroundColor: #333333;
 	rollOverColor: #777777;
 	textRollOverColor: #ffffff;
-	borderColor: #999999;
+	borderColor: #666666;
 	selectionColor: #666666;
 	color: #cccccc;
 	textSelectedColor: #ffffff;
@@ -106,8 +114,4 @@ MenuBar {
 }
 MenuBar.List {
 	color: #ff9900;
-}
-HRule {
-	strokeColor: #999999;
-	strokeWidth: 1;
 }

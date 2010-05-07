@@ -45,4 +45,9 @@
 		]]>
 	</mx:Script>
 	<mx:Label x="65" y="59" text="版本：v2.0"/>
+	<mx:RadioButtonGroup id="radiogroup1"/>
+	<mx:RadioButton x="10" y="10" label="Button 1" groupName="radiogroup1"/>
+	<mx:RadioButton x="10" y="36" label="Button 2" groupName="radiogroup1"/>
+	<mx:CheckBox x="130" y="10" label="Checkbox"/>
+	<mx:CheckBox x="130" y="36" label="Checkbox"/>
 </mx:TitleWindow>

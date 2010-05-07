@@ -4,23 +4,17 @@ package editor.modul
 	
 	public class EditorModul
 	{
-		private static var _fileName:String;
-		public static function get fileName():String
-		{
-			return _fileName;
-		}
+		/**
+		 * 场景里的元件。
+		 */		
+		public static var resource:XML;
 		
-		private static var _sceneFilePath:String;
-		public static function set sceneFilePath(url:String):void
-		{
-			var arr:Array = url.split("\\");
-			_fileName = arr.pop() as String;
-			_sceneFilePath = arr.join("\\")+"\\";
-		}
-		public static function get sceneFilePath():String
-		{
-			return _sceneFilePath;
-		}
+		//场景的文件名。
+		internal static var fileName:String;
+		
+		
+		//场景保存的路径
+		internal static var sceneFilePath:String;
 
 	}
 }
