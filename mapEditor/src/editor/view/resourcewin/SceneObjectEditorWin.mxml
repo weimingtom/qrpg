@@ -4,6 +4,7 @@
 	creationComplete="init()" xmlns:resourcewin="editor.view.resourcewin.*" xmlns:menu="editor.view.menu.*">
 	<mx:Script>
 		<![CDATA[
+			import editor.modul.ModulProxy;
 			import editor.action.MoveAreaData;
 			import editor.event.EventPool;
 			import editor.modul.EditorModul;
@@ -65,7 +66,7 @@
 					if ( data is XML )
 					{
 						trace(data.toXMLString())
-						_win._path = EditorModul.sceneFilePath;
+						_win._path = ModulProxy.sceneFilePath;
 						_win.xmlData = data;
 					}
 				}

@@ -4,6 +4,7 @@
 	creationComplete="init()" close="end()">
 	<mx:Script>
 		<![CDATA[
+			import editor.view.help.SceneXMLView;
 			import editor.view.resourcewin.SceneObjectEditorWin;
 			import editor.event.EventPool;
 			import mx.core.Application;
@@ -127,8 +128,14 @@
 			private function onModifySaveHandler(evt:EditEvent):void
 			{
 				var xml:XML = new XML(evt.data);
-				selected.rebuildByXML(xml);
+				//TODO 这里要改为所有引用了这个元件的实例都要修改。
+				//selected.rebuildByXML(xml);
 				
+			}
+			
+			private function getSceneXML():void
+			{
+				SceneXMLView.open();
 			}
 			
 		]]>
@@ -136,6 +143,7 @@
 	<mx:ViewStack x="0" y="0" id="proView" width="480" height="118">
 		<mx:Canvas id="nothing" label="selectNothing" width="100%" height="100%">
 			<mx:Label x="10" y="10" text="现在没有选中任何物体"/>
+			<mx:Button x="190.5" y="50" label="查看场景XML" click="getSceneXML()"/>
 		</mx:Canvas>
 		<mx:Canvas id="sceneObject" label="sceneObject" width="100%" height="100%">
 			<mx:Label x="10" y="10" text="物体名称"/>

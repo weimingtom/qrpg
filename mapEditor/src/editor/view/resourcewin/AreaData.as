@@ -8,9 +8,9 @@ package editor.view.resourcewin
 	
 	/**
 	 * 数据发生变动时发布。
-	 * @eventType com.tywin.mapEditor.event.EditEvent.AREA_DATA_CHANGE
+	 * @eventType editor.event.EditEvent.AREA_DATA_CHANGE
  	 */
-	[Event(name="areaDataChange", type="com.tywin.mapEditor.event.EditEvent")]
+	[Event(name="areaDataChange", type="editor.event.EditEvent")]
 	
 	/**
 	 * 编辑区域。

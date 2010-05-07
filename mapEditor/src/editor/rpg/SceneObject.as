@@ -1,7 +1,7 @@
 package editor.rpg
 {
 	import editor.event.EditEvent;
-	import editor.modul.EditorModul;
+	import editor.modul.ModulProxy;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -15,24 +15,46 @@ package editor.rpg
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	
+	/**
+	 * 场景里的物体。
+	 * @author 陈策
+	 */	
 	public class SceneObject extends LoadSprite
 	{
+		/**
+		 * 物体名称。
+		 */		
 		public var objName:String;
-		public var comany:String;
+		
+		/**
+		 * 物体上的脚本。
+		 */		
 		public var script:String;
+		
+		/**
+		 * 物体脚本的类型。
+		 */		
 		public var scriptType:String;
 		
+		/**
+		 * 物品属于哪个元件的实例。
+		 */		
+		public var source:String;
+		
+		/**
+		 * 物体所在图层。
+		 */		
 		public var gameLayer:GameLayer;
 		
-		private var _src:String;
-		private var _rect:Rectangle;
-		private var _center:Point;
+		private var _src:String;			//物体加载图片的路径
+		private var _rect:Rectangle;		//物体的显示区域
+		private var _center:Point;			//物体的中心点位置
 		
-		private var _bmp:Bitmap;
+		private var _bmp:Bitmap;			//物体显示需要的图片数据
 		
-		private var _hitAreaData:Array;
-		private var _hitArea:AreaSprite;
-		private var _unwalkData:Array;
+		private var _hitAreaData:Array;		//点击区域的数据
+		private var _hitArea:AreaSprite;	//点击区域实例
+		private var _unwalkData:Array;		//不可走区域数据（在编辑器里，不可走区域只用设置，不会用到，所以不用实例化）
 		
 		public function SceneObject(src:String, rect:Rectangle, center:Point)
 		{
@@ -45,12 +67,15 @@ package editor.rpg
 			_center = center;
 		}
 		
+		/**
+		 * 按新的XML数据重新设定实例的属性。设定后将会被刷新。
+		 * @param xml 数据。
+		 */		
 		public function rebuildByXML(xml:XML):void
 		{
-			if ( xml.@name!=undefined ) this.objName = xml.@name;
-			if ( xml.@company!=undefined ) this.comany = xml.@company;
+			/* if ( xml.@name!=undefined ) this.objName = xml.@name; */
 			
-			this.src = xml..item.@src;
+			this.src = xml.@src;
 			
 			this._rect.x = Number(xml..frame.@x);
 			this._rect.y = Number(xml..frame.@y);
@@ -62,15 +87,18 @@ package editor.rpg
 			
 			if ( xml.hitarea.toString() ) this.hitAreaData = xml.hitarea.toString().split(",");
 			if ( xml.unwalk.toString() ) this.unwalkData = xml.unwalk.toString().split(",");
-			if ( xml.script.toString() )
+			/* if ( xml.script.toString() )
 			{
 				this.script = xml.script.toString();
 				this.scriptType = xml.script.@type;
-			}
+			} */
 			
 			load();
 		}
 		
+		/**
+		 * 显示区域。
+		 */		
 		public function get displayRect():Rectangle
 		{
 			var rect:Rectangle = new Rectangle();
@@ -81,6 +109,9 @@ package editor.rpg
 			return rect;
 		}
 		
+		/**
+		 * 点击区域的数据。
+		 */		
 		public function set hitAreaData(data:Array):void
 		{
 			_hitAreaData = data;
@@ -90,33 +121,49 @@ package editor.rpg
 			addChild(_hitArea);
 		}
 		
+		/**
+		 * 不可走区域的数据
+		 */		
 		public function set unwalkData(data:Array):void
 		{
 			_unwalkData = data;
 			_unwalkData.forEach(toNumber);
 		}
 		
+		/**
+		 * 生成代表这个实例的XML
+		 * return
+		 */		
 		public function getXML():XML
 		{
-			var xml:XML = <bldg x={x} y={y} name={objName}>
-									<items>
-										<item src={_src}>
-											<actions>
-												<action type="stop" name="default" defaultAction="true">
-													<frame width={_rect.width} height={_rect.height} x={_rect.x} y={_rect.y} cx={_center.x} cy={_center.y}/>
-												</action>
-											</actions>
-										</item>
-									</items>
-								</bldg>
-			if ( comany && comany!="null" ) xml.@company = comany;
+			var xml:XML = <item source={source} x={x} y={y} name={objName}/>
+			if ( script && scriptType && scriptType!=="none" ) xml.appendChild(<script type={scriptType}>{script}</script>);
+			return xml;
+		}
+		
+		/**
+		 * 生成代表这个物体的𤕤元件的数据
+		 * @return 
+		 */		
+		public function getResourceXML():XML
+		{
+			var xml:XML = <item src={_src}>
+								<actions>
+									<action type="stop" name="default" defaultAction="true">
+										<frame width={_rect.width} height={_rect.height} x={_rect.x} y={_rect.y} cx={_center.x} cy={_center.y}/>
+									</action>
+								</actions>
+							</item>
 			if ( _hitAreaData && _hitAreaData.length>0 ) xml.appendChild(<hitarea>{_hitAreaData.toString()}</hitarea>);
 			if ( _unwalkData && _unwalkData.length>0 ) xml.appendChild(<unwalk>{_unwalkData.toString()}</unwalk>);
-			if ( script && scriptType && scriptType!=="none" ) xml.appendChild(<script type={scriptType}>{script}</script>);
 			
 			return xml;
 		}
 		
+		/**
+		 * 复制一个属性完成相同的实例。
+		 * @return 
+		 */		
 		public function copy():SceneObject
 		{
 			var obj:SceneObject = new SceneObject(_src, _rect.clone(), _center.clone());
@@ -188,7 +235,7 @@ package editor.rpg
 		private function createBitmapData():void
 		{
 			var file:File = new File();
-			file.nativePath = EditorModul.sceneFilePath+_src;
+			file.nativePath = ModulProxy.sceneFilePath+_src;
 			var stream:FileStream = new FileStream();
 			try
 			{

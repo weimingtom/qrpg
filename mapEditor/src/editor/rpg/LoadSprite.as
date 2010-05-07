@@ -1,7 +1,7 @@
 package editor.rpg
 {
 	import editor.event.EditEvent;
-	import editor.modul.EditorModul;
+	import editor.modul.ModulProxy;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -16,10 +16,10 @@ package editor.rpg
 	
 	/**
 	 *  加载完成后发布。
-	 *  @eventType com.tywin.mapEditor.event.EditEvent.COMPLETE
+	 *  @eventType editor.event.EditEvent.COMPLETE
 	 *  @tiptext complete event
 	 */
-	[Event(name="complete", type="com.tywin.mapEditor.event.EditEvent")]
+	[Event(name="complete", type="editor.event.EditEvent")]
 	
 	public class LoadSprite extends GameSprite
 	{
@@ -35,7 +35,7 @@ package editor.rpg
 		public function set src(value:String):void
 		{
 			var file:File = new File();
-			file.nativePath = EditorModul.sceneFilePath+value;
+			file.nativePath = ModulProxy.sceneFilePath + value;
 			var stream:FileStream = new FileStream();
 			
 			try
@@ -46,8 +46,8 @@ package editor.rpg
 			}
 			catch(e:*)
 			{
-				trace("加载的文件{"+(EditorModul.sceneFilePath+value)+"}不存在。");
-				dispatchEvent(new EditEvent(EditEvent.FILE_NOT_EXIST, EditorModul.sceneFilePath+value));
+				trace("加载的文件{"+(ModulProxy.sceneFilePath + value)+"}不存在。");
+				dispatchEvent(new EditEvent(EditEvent.FILE_NOT_EXIST, ModulProxy.sceneFilePath + value));
 			}
 		}
 		

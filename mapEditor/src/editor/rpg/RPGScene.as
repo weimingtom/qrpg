@@ -2,8 +2,6 @@ package editor.rpg
 {
 	import editor.modul.EditorModul;
 	
-	import mx.collections.ArrayCollection;
-	
 	public class RPGScene extends GameSprite
 	{
 		private var _focusX:int;
@@ -60,6 +58,9 @@ package editor.rpg
 		
 		public function build(xml:XML):void
 		{
+			//元件库
+			EditorModul.resource = XML(xml.lib);
+			
 			//背景块
 			_bgpic.widthPic = Number(xml.@width);
 			_bgpic.heightPic = Number(xml.@height);
@@ -91,6 +92,9 @@ package editor.rpg
 		{
 			var xml:XML =<scene width={_bgpic.widthPic} height={_bgpic.heightPic} nodewidth={_bgpic.nodeWidth} nodeheight={_bgpic.nodeHeight} filesrc={_bgpic.src}/>
 			var tmpXML:XML;
+			
+			//场景元件。
+			xml.appendChild(EditorModul.resource);
 			
 			//不可走区域
 			xml.appendChild(tMPuNWALK);
