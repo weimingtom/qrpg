@@ -10,7 +10,7 @@
 			
 			private function init():void
 			{
-				ctrl = Controler.getInstance(); 
+				ctrl = Controler.getInstance();
 				ctrl.root = sceneRoot;
 				ctrl.init();
 			}
