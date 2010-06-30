@@ -13,6 +13,7 @@ package editor.command
 		override protected function initializeMacroCommand():void
 		{
 			addSubCommand( RegisterCommand );
+			addSubCommand( InitSceneCommand );
 			addSubCommand( InitMenuCommand );
 		}
 	}

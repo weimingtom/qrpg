@@ -27,6 +27,7 @@
 				asObj.height = Number(sceneHeight.text);
 				asObj.filePath = filePath.text;
 				dispatchEvent(new MapEvent(MapEvent.CONFORM, asObj));
+				NewSceneMediator.removePopUp();
 			}
 
 

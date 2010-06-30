@@ -4,8 +4,14 @@ package editor
 	import editor.command.StartUpCommand;
 	import editor.model.menu.MenuModel;
 	import editor.model.menu.MenuProxy;
+	import editor.model.scene.SceneModel;
+	import editor.model.scene.SceneProxy;
 	import editor.view.menu.MapMenu;
 	import editor.view.menu.MenuMediator;
+	import editor.view.rpgScene.Scene;
+	import editor.view.rpgScene.SceneMediator;
+	
+	import mx.core.Application;
 	
 	import org.puremvc.as3.patterns.facade.Facade;
 	
@@ -36,6 +42,7 @@ package editor
 		{
 			super.initializeModel();
 			
+			registerProxy( new SceneProxy( SceneModel.getInstance() ) );
 			registerProxy( new MenuProxy( MenuModel.getInstance() ) );
 		}
 		
@@ -43,6 +50,7 @@ package editor
 		{
 			super.initializeView();
 			
+			registerMediator( new SceneMediator( new Scene(Application.application.width, Application.application.height) ) );
 			registerMediator( new MenuMediator( new MapMenu() ) ); 
 			
 		}
