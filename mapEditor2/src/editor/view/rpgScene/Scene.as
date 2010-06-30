@@ -1,4 +1,4 @@
-package editor.view
+package editor.view.rpgScene
 {
 	import flash.display.Sprite;
 	
@@ -23,6 +23,11 @@ package editor.view
 			super();
 			this.screenWidth = screenWidth;
 			this.screenHeight = screenHeight;
+		}
+		
+		public function set backGroundSource(value:String):void
+		{
+			
 		}
 	}
 }

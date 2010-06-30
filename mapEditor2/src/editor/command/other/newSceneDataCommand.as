@@ -1,6 +1,8 @@
 package editor.command.other
 {
+	import editor.model.menu.MenuProxy;
 	import editor.model.scene.SceneProxy;
+	import editor.type.MenuCommandType;
 	
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.interfaces.INotification;
@@ -16,7 +18,8 @@ package editor.command.other
 	{
 		override public function execute(notification:INotification):void
 		{
-			var sceneProxy:SceneProxy = Facade.getInstance().retrieveProxy(SceneProxy.NAME) as SceneProxy;
+			var sceneProxy:SceneProxy = facade.retrieveProxy(SceneProxy.NAME) as SceneProxy;
+			var menuProxy:MenuProxy = facade.retrieveProxy(MenuProxy.NAME) as MenuProxy;
 			
 			var obj:Object = notification.getBody();
 			var width:int = int(obj.width);
@@ -28,6 +31,9 @@ package editor.command.other
 			</scene>
 			
 			sceneProxy.newSceneData(xml);
+			
+			menuProxy.setMenuEnable(MenuCommandType.SAVE_FILE, true);	//保存
+			menuProxy.setMenuEnable(MenuCommandType.SAVE_AS, true);		//另存
 		}
 	}
 }
