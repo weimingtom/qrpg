@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="400" height="250">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Button;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			
+			private var text:String;
+			private var buttonLabel:String;
+			private var focus:String;
+			private var closeHandler:Function;
+			
+			/**
+			 * 弹出警告面板。
+			 * @param text 内容。
+			 * @param title 标题
+			 * @param buttonLabel 按钮文字。用|分隔每一个按钮。
+			 * @param focus 默认的按钮。
+			 * @param closeHandler 点击按钮后运行的方法。参数为被点击的接钮文字。
+			 * @return 警告面板实例
+			 */		
+			public static function show(text:String, title:String="", buttonLabel:String="确定", focus:String="确定", closeHandler:Function=null, modal:Boolean=false):MapAlert
+			{
+				var alert:MapAlert = new MapAlert();
+				alert.title = title;
+				alert.text = text;
+				alert.buttonLabel = buttonLabel;
+				alert.focus = focus;
+				alert.closeHandler = closeHandler;
+				
+				PopUpManager.addPopUp(alert, Application.application as DisplayObject, modal);
+				PopUpManager.centerPopUp(alert);
+				
+				return alert;
+			}
+			
+			public function end():void
+			{
+				var btn:Button;
+				for ( ;buttons.numChildren>0; )
+				{
+					btn = buttons.getChildAt(0) as Button;
+					btn.removeEventListener(MouseEvent.CLICK, buttonClickHandler);
+					buttons.removeChildAt(0);
+				}
+				PopUpManager.removePopUp(this);
+			}
+			
+			override protected function childrenCreated():void
+			{
+				super.childrenCreated();
+				
+				//设置文字
+				if ( alertText )
+				{
+					alertText.htmlText = text;
+				}
+				 
+				//设置按钮
+				if ( buttons )
+				{
+					var button:Button;
+					var buttonArr:Array = buttonLabel.split("|");
+					var i:int;
+					var len:int = buttonArr.length;
+					for ( i=0; i<len; i++ )
+					{
+						button = new Button();
+						button.label = buttonArr[i];
+						buttons.addChild(button);
+						if ( stage && focus==buttonArr[i] )
+						{
+							stage.focus = button;
+						}
+						button.addEventListener(MouseEvent.CLICK, buttonClickHandler);
+					}
+				}
+			}
+			
+			private function buttonClickHandler(evt:MouseEvent):void
+			{
+				var btn:Button = evt.currentTarget as Button;
+				if ( closeHandler!=null )
+				{
+					closeHandler(btn);
+				}
+				end();
+			}
+			
+			
+		]]>
+	</mx:Script>
+
+	<mx:Text x="10" width="360" textAlign="center" verticalCenter="-10" id="alertText"/>
+	<mx:HBox width="100%" id="buttons" horizontalAlign="center" bottom="10"/>
+</mx:Panel>

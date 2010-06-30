@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="320" height="200" title="版本" showCloseButton="true">
+	<mx:Label text="版本：v2.0" horizontalCenter="0" verticalCenter="0"/>
+</mx:TitleWindow>

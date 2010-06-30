@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="windowedapplication1_creationCompleteHandler(event)">
+	<mx:Style source="skin/css.css"/>
+	<mx:Script>
+		<![CDATA[
+			import editor.MapFacade;
+			
+			import mx.events.FlexEvent;
+			
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				MapFacade.getInstance().sendNotification(MapFacade.START_UP_COMMAND);
+			}
+
+		]]>
+	</mx:Script>
+</mx:WindowedApplication>

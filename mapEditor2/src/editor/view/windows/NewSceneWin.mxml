@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="400" height="200" title="新建场景" showCloseButton="true">
+
+	<mx:Script>
+		<![CDATA[
+			import editor.event.MapEvent;
+			protected function pathClickHandler(event:MouseEvent):void
+			{
+				var file:File = new File();
+				file.browseForSave("保存");
+				file.addEventListener(Event.SELECT, filePathSelectedHandler);
+			}
+			
+			protected function filePathSelectedHandler(evt:Event):void
+			{
+				filePath.text = (evt.target as File).nativePath;
+			}
+
+			protected function conformClickHandler(event:MouseEvent):void
+			{
+				if ( filePath.text=="" || Number(sceneHeight.text)<=0 || Number(sceneHeight.text)<=0 )
+				{
+					return;
+				}
+				var asObj:Object = new Object();
+				asObj.width = Number(sceneWidth.text);
+				asObj.height = Number(sceneHeight.text);
+				asObj.filePath = filePath.text;
+				dispatchEvent(new MapEvent(MapEvent.CONFORM, asObj));
+			}
+
+
+			protected function closeClickHandler(event:MouseEvent):void
+			{
+				NewSceneMediator.removePopUp();
+			}
+
+		]]>
+	</mx:Script>
+
+	
+	<mx:Label x="24" y="29" text="选择路径"/>
+	<mx:TextInput x="85" y="27" width="190" id="filePath" editable="false"/>
+	<mx:Button x="283" y="27" label="选择" click="pathClickHandler(event)"/>
+	<mx:Label x="24" y="66" text="场景宽"/>
+	<mx:Label x="204" y="66" text="场景高"/>
+	<mx:TextInput x="85" y="64" width="80" id="sceneWidth" text="1200"/>
+	<mx:TextInput x="253" y="64" width="80" text="1000" id="sceneHeight"/>
+	<mx:Button x="136" y="110" label="确定" click="conformClickHandler(event)"/>
+	<mx:Button x="194" y="110" label="关闭" click="closeClickHandler(event)"/>
+</mx:TitleWindow>
