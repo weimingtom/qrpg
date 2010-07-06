@@ -47,7 +47,19 @@ package editor.model.scene
 		{
 			sceneData.xml = xml;
 			sendNotification(SceneModelType.UPDATE);
-			
+		}
+		
+		/**
+		 * 设置被选择的物体。如果为null，未选中任何物体。
+		 */		
+		public function set selected(obj:*):void
+		{
+			sceneData.selected = obj;
+			sendNotification(SceneModelType.OBJECT_SELECTED);
+		}
+		public function get selected():*
+		{
+			return sceneData.selected;
 		}
 	}
 }

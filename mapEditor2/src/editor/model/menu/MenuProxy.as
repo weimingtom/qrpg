@@ -41,5 +41,25 @@ package editor.model.menu
 			}
 			return false;
 		}
+		
+		/**
+		 * 设置菜单中的某项的toggled属性。
+		 * @param type 菜单中对应的 data 字段的值。
+		 * @param isToggled 是否被勾选。
+		 * @return 如果有对应菜单并设置成功则返回 true，反之返回 false。
+		 */		
+		public function setMenuToggled(type:String, isToggled:Boolean):Boolean
+		{
+			if ( !menu )
+			{
+				return false;
+			}
+			if ( menu.mainMenuData..command.(@data==type) )
+			{
+				menu.mainMenuData..command.(@data==type).@toggled = isToggled;
+				return true;
+			}
+			return false;
+		}
 	}
 }

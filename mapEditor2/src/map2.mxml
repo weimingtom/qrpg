@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="windowedapplication1_creationCompleteHandler(event)">
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="640" height="480" 
+						creationComplete="creationCompleteHandler(event)" resize="resizeHandler(event)">
 	<mx:Style source="skin/css.css"/>
 	<mx:Script>
 		<![CDATA[
 			import editor.MapFacade;
+			import editor.type.SystemCommandType;
 			
 			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
 			
-			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				MapFacade.getInstance().sendNotification(MapFacade.START_UP_COMMAND);
+				MapFacade.getInstance().sendNotification(SystemCommandType.START_UP_COMMAND);
+			}
+
+
+			protected function resizeHandler(event:ResizeEvent):void
+			{
+				var asObj:Object = new Object();
+				asObj.width = application.width;
+				asObj.height = application.height;
+				MapFacade.getInstance().sendNotification(SystemCommandType.RESIZE_COMMAND, asObj);
 			}
 
 		]]>

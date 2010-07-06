@@ -6,6 +6,7 @@ package editor
 	import editor.model.menu.MenuProxy;
 	import editor.model.scene.SceneModel;
 	import editor.model.scene.SceneProxy;
+	import editor.type.SystemCommandType;
 	import editor.view.menu.MapMenu;
 	import editor.view.menu.MenuMediator;
 	import editor.view.rpgScene.Scene;
@@ -17,9 +18,6 @@ package editor
 	
 	public class MapFacade extends Facade
 	{
-		// 开始运行程序
-		public static const START_UP_COMMAND:String = "startUp";
-		
 		public static function getInstance():MapFacade
 		{
 			if (instance == null) instance = new MapFacade();
@@ -35,7 +33,7 @@ package editor
 		{
 			super.initializeController();
 			
-			registerCommand( START_UP_COMMAND, StartUpCommand );
+			registerCommand( SystemCommandType.START_UP_COMMAND, StartUpCommand );
 		}
 		
 		override protected function initializeModel():void

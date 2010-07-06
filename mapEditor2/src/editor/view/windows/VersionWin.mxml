@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="320" height="200" title="版本" showCloseButton="true">
 	<mx:Label text="版本：v2.0" horizontalCenter="0" verticalCenter="0"/>
+	<mx:CheckBox x="36" y="101" label="CheckBox"/>
+	<mx:RadioButton x="35" y="72" label="单选框"/>
+	<mx:TextArea x="124" y="96"/>
 </mx:TitleWindow>

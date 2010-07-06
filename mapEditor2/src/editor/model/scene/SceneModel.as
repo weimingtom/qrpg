@@ -16,6 +16,11 @@ package editor.model.scene
 		 */		
 		public var xml:XML;
 		
+		/**
+		 * 被选择的物体。
+		 */		
+		public var selected:*;
+		
 		public function SceneModel()
 		{
 			if ( instance!=null ) throw Error(ErrorType.SINGLETON_MSG);
