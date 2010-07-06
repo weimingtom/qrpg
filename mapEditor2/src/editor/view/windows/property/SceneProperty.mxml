@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import editor.model.scene.SceneProxy;
+			
+			import org.puremvc.as3.patterns.facade.Facade;
+			
+			/**
+			 * 更新本界面内的组件是否可用。
+			 * 如果场景数据不存在，则不可以使用。
+			 */
+			public function freshSceneCloseStatus():void
+			{
+				var sceneProxy:SceneProxy = Facade.getInstance().retrieveProxy(SceneProxy.NAME) as SceneProxy;
+				var hasData:Boolean = sceneProxy.hasData();
+				
+				if ( sceneNameTxt ) sceneNameTxt.enabled = hasData;
+				if ( scneneBackGrounImageTxt ) scneneBackGrounImageTxt.enabled = hasData;
+				if ( selectBackGrounBtn ) selectBackGrounBtn.enabled = hasData;
+				if ( sceneWidthTxt ) sceneWidthTxt.enabled = hasData;
+				if ( sceneHeightTxt ) sceneHeightTxt.enabled = hasData;
+			}
+			
+			override protected function childrenCreated():void
+			{
+				super.childrenCreated();
+				
+				freshSceneCloseStatus();
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Label x="10" y="10" text="场景名称"/>
+	<mx:TextInput id="sceneNameTxt" x="71" y="8"/>
+	
+	<mx:Label x="10" y="42" text="背景图片"/>
+	<mx:TextInput id="scneneBackGrounImageTxt" x="71" y="40" width="283"/>
+	<mx:Button id="selectBackGrounBtn" x="362" y="40" label="选择"/>
+	
+	<mx:Label x="10" y="74" text="场景宽"/>
+	<mx:TextInput id="sceneWidthTxt" x="59" y="72" width="100"/>
+	<mx:Label x="210" y="74" text="场景高"/>
+	<mx:TextInput id="sceneHeightTxt" x="259" y="72" width="100"/>
+</mx:Canvas>

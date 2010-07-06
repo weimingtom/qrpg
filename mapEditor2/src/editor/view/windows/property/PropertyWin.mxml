@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="450" height="200" showCloseButton="true" fontSize="12" xmlns:property="editor.view.windows.property.*">
+	<mx:Script>
+		<![CDATA[
+			import editor.model.scene.SceneModel;
+			import editor.model.scene.SceneProxy;
+			
+			import org.puremvc.as3.patterns.facade.Facade;
+			
+			/**
+			 * 场景内切换被选中的物体。
+			 */
+			public function changeSelect():void
+			{
+				var selected:* = (Facade.getInstance().retrieveProxy(SceneProxy.NAME) as SceneProxy).selected;
+				if ( !selected )
+				{
+					propertyVS.selectedIndex = 0;
+					if ( sceneProperty ) sceneProperty.freshSceneCloseStatus();
+					title = "场景属性";
+				}
+				else if ( selected is Object )
+				{
+					//TODO 给其他可以被选中的留类型预留
+				}
+			}
+			
+			/**
+			 * 场景数据有更新。
+			 * @param data 被更新的场景数据。
+			 */
+			public function updateSceneData(data:*):void
+			{
+				if ( sceneProperty ) sceneProperty.freshSceneCloseStatus();
+			}
+			
+			override protected function childrenCreated():void
+			{
+				super.childrenCreated();
+				
+				changeSelect();
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:ViewStack id="propertyVS" width="100%" height="100%" creationPolicy="all">
+		<property:SceneProperty id="sceneProperty" label="场景属性" width="100%" height="100%"/>
+	</mx:ViewStack>
+</mx:TitleWindow>
