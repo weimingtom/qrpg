@@ -1,6 +1,13 @@
 package qrpg.display
 {
+	import qrpg.event.RoleEvent;
 	import qrpg.util.GameMath;
+	
+	/**
+	 * 走到终点。
+	 * @EventType qrpg.event.RoleEvent.ARRIVE_END
+	 */	
+	[Event(name="arriveEnd", type="qrpg.event.RoleEvent")]
 	
 	/**
 	 * RPG角色类。
@@ -35,7 +42,7 @@ package qrpg.display
 		 */		
 		public function set state(value:String):void
 		{
-			if ( actions.hasState(value) )
+			if ( actions && actions.hasState(value) )
 			{
 				_state = value;
 				changeAct(state+"_"+getDirection(_angle), true);
@@ -96,6 +103,14 @@ package qrpg.display
 					changeAct(state+"_"+getDirection(_angle), true);
 				}
 				//移动
+				if ( _ay>y )
+				{
+					dispatchEvent(new RoleEvent(RoleEvent.MOVE_DOWN));
+				}
+				else if ( _ay<y )
+				{
+					dispatchEvent(new RoleEvent(RoleEvent.MOVE_UP));
+				}
 				if ( Math.abs(_ax-x)+Math.abs(_ay-y)>.5 )
 				{
 					x = Math.abs(_ax-x)>Math.abs(_speedX) ? x+_speedX : _ax;
@@ -111,6 +126,7 @@ package qrpg.display
 				if ( _ax==x && _ay==y )
 				{
 					state = RPGRoleActionType.STAND;
+					dispatchEvent(new RoleEvent(RoleEvent.ARRIVE_END));
 				}
 			}
 			

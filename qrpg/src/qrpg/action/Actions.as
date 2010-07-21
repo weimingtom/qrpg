@@ -10,7 +10,7 @@ package qrpg.action
 	 * 动作改变时触发。
 	 * @EventType qrpg.event.ActionEvent.ACTION_CHANGE
 	 */	
-	[Event(name="actionChange", type="qrpg.event.ActionEvent")]
+	[Event(name="actionChangeXX", type="qrpg.event.ActionEvent")]
 	
 	/**
 	 * 动作指针改变时触发。
@@ -36,12 +36,12 @@ package qrpg.action
 		 */		
 		public var hasInterval:Boolean;
 		
-		private var _acts:HashMap;		//存放动作集。
-		private var _defaultAct:Act;	//默认动作。
-		private var _currentAct:Act;	//当前动作。
-		private var _lastAct:Act;		//最后一个动作。
-		private var _pointer:int;		//动作指针。
-		private var _runTime:Boolean;	//是否是播放时间。
+		private var _acts:HashMap;			//存放动作集。
+		private var _defaultAct:Act;		//默认动作。
+		private var _currentAct:Act;		//当前动作。
+		private var _lastAct:Act;			//最后一个动作。
+		private var _pointer:int;			//动作指针。
+		private var _runTime:Boolean;		//是否是播放时间。
 		private var _isPlaying:Boolean;	//是否正在播放。
 		
 		/**

@@ -36,11 +36,12 @@ package qrpg.display
 	[Event(name="update", type="qrpg.event.GameEvent")]
 	
 	/**
-	 * 显示物体的基类。
-	 * 该类不是DisplayObject的子类，所以是不可以添加至显示列表里的。<br/>
-	 * 要显示该类的实例，需要用该类的displayData()方法得到需要显示的图像的BitmapData。
+	 * 显示物体的基类。<br/>
+	 * 该类不是 DisplayObject 的子类，所以是不可以添加至显示列表里的。<br/>
+	 * 要显示该类的实例，需要用该类的 displayData() 方法得到需要显示的图像的 BitmapData。
 	 * @author 陈策
 	 * @version 3.0
+	 * @see qrpg.display.ISceneAddable
 	 */
 	public class DisplayGameObject extends EventDispatcher implements ISceneAddable
 	{
@@ -75,34 +76,34 @@ package qrpg.display
 		}
 		
 		/**
-		 * 图片资源。该属性可以是字符，可以是类，可以是显示对象。
-		 * 如果该属性是字符串，则会加载该字符串所代表的URL的资源。
-		 * 如果是类，则会实例化为一个显示对象。
-		 * 如果为一个显示对象，则为需要显示的资源。
-		 * @param obj 数据源。
+		 * 图片资源。<br/>
+		 * 该属性可以是字符，可以是类，可以是显示对象。<br/>
+		 * 如果该属性是字符串，则会加载该字符串所代表的URL的资源。<br/>
+		 * 如果是类，则会实例化为一个显示对象。<br/>
+		 * 如果为一个显示对象，则为需要显示的资源。<br/>
 		 */
-		public function set source(obj:Object):void
+		public function set source(value:Object):void
 		{
-			if ( obj is BitmapData )
+			if ( value is BitmapData )
 			{
-				_bitmapData = obj as BitmapData;
+				_bitmapData = value as BitmapData;
 				_isLoaded = true;
 				checkMirror();
 			}
-			else if ( obj is Bitmap )
+			else if ( value is Bitmap )
 			{
-				_bitmapData = (obj as Bitmap).bitmapData;
+				_bitmapData = (value as Bitmap).bitmapData;
 				_isLoaded = true;
 				checkMirror();
 			}
-			else if ( obj is DisplayObject )
+			else if ( value is DisplayObject )
 			{
-				_source = obj as DisplayObject;
+				_source = value as DisplayObject;
 				_isLoaded = true;
 			}
-			else if ( obj is Class )
+			else if ( value is Class )
 			{
-				var tmp:* = new obj();
+				var tmp:* = new value();
 				if ( tmp is Bitmap )
 				{
 					_bitmapData = (tmp as Bitmap).bitmapData;
@@ -118,10 +119,10 @@ package qrpg.display
 				}
 				_isLoaded = true;
 			}
-			else if ( obj is String || obj is URLRequest )
+			else if ( value is String || value is URLRequest )
 			{
-				if ( obj is String ) _url = new URLRequest(String(obj));
-				else _url = obj as URLRequest;
+				if ( value is String ) _url = new URLRequest(String(value));
+				else _url = value as URLRequest;
 				load();
 			}
 		}
@@ -166,6 +167,10 @@ package qrpg.display
 		 */
 		public function get displayRect():Rectangle
 		{
+			/*if ( !_actions )
+			{
+				return new Rectangle();
+			}*/
 			var quondamRect:Rectangle = _actions.currentFrame.rect
 			if ( !isMirror ) return quondamRect;
 			var rect:Rectangle = new Rectangle();
@@ -189,6 +194,10 @@ package qrpg.display
 		public function get displayPoint():Point
 		{
 			var p:Point = new Point();
+			/*if ( !actions )
+			{
+				return p;
+			}*/
 			if ( !isMirror )
 			{
 				p.x = x - actions.currentFrame.center.x;
@@ -262,7 +271,7 @@ package qrpg.display
 		 * @param cut 是否切割。如果不切割将得到一张整图，需要外部程序自行切割。<br/>
 		 * 因为在场景里绘制的时候，也是要再做切割的，所以这里不做切割的话，效率会更高一些。<br/>
 		 * 在某些场合，物品有可能不是放在场景里的，所以需要切割后的图片。
-		 * @return 图片。
+		 * @return 要显示的图片。
 		 */		
 		public function displayData(cut:Boolean=false):BitmapData
 		{
@@ -300,6 +309,7 @@ package qrpg.display
 		 */		
 		public function changeAct(actName:String, keepStep:Boolean=false):void
 		{
+			if ( !_actions ) return;
 			var act:Act = _actions.getActByName(actName);
 			if ( act )
 			{
