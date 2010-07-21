@@ -12,69 +12,104 @@
 			import qrpg.display.DisplayGameObject;
 			import qrpg.display.RPGRole;
 			import qrpg.event.GameEvent;
+			import qrpg.event.RoleEvent;
 			
 			private var roleXMLPath:String = "assets/knight.xml";
 			private var roleImgPath:String = "assets/knight.png";
 			
-			private var role:RPGRole;
+			[Embed(source="assets/knight.png")]
+			private var pic:Class;
 			
-			private var roleRect:Rectangle;
+			/* [Embed(source="assets/knight.xml")]
+			private var xmldata:Class; */
+			
+			//private var role:RPGRole;
+			//private var xml:XML;
+			
+			private var roleArr:Array = [];
+			private var maxCount:int = 1;
+			
+			private var _count:int;
+			
+			private function set count(value:int):void
+			{
+				_count = value;
+				showCount.text = _count + "个";
+			}
+			private function get count():int
+			{
+				return _count;
+			}
+			
+			//private var roleRect:Rectangle;
 			
 			private function init():void
 			{
-				var load:URLLoader = new URLLoader();
-				load.load(new URLRequest(roleXMLPath));
-				load.addEventListener(Event.COMPLETE, roleXMLCompleteHandler);
-			}
-			
-			private function roleXMLCompleteHandler(evt:Event):void
-			{
-				(evt.currentTarget as URLLoader).removeEventListener(Event.COMPLETE, roleXMLCompleteHandler);
-				var xml:XML = new XML((evt.currentTarget as URLLoader).data);
-				var acts:Actions = Actions.createByXML(XML(xml.actions));
 				
-				role = new RPGRole();
-				role.speed = 10;
-				role.x = 100;
-				role.y = 100;
-				role.moveTo(role.x, role.y);
-				role.source = roleImgPath;
-				role.actions = acts;
-				role.addEventListener(Event.COMPLETE, roleCompleteHandler);
-			}
-			
-			private function roleCompleteHandler(evt:Event):void
-			{
-				role.removeEventListener(Event.COMPLETE, roleCompleteHandler);
-				var bmpData:BitmapData = new BitmapData(stage.stageWidth, stage.stageHeight, true, 0);
+				
+				var role:RPGRole;
+				count = 0;
+				for (var i:int=0; i<maxCount; i++)
+				{
+					addRole();
+				}
+				
+				var bmpData:BitmapData = new BitmapData(application.width, application.height, true, 0);
 				img.source = new Bitmap(bmpData);
 				
 				addEventListener(Event.ENTER_FRAME, loop);
-				addEventListener(MouseEvent.CLICK, clickHandler);
 				addEventListener(Event.RESIZE, resizeHandler);
+				
 			}
 			
-			private function clickHandler(evt:MouseEvent):void
+			private function roleArriveHandler(evt:RoleEvent):void
 			{
-				role.moveTo(mouseX, mouseY);
+				var currentRole:RPGRole = evt.currentTarget as RPGRole;
+				currentRole.moveTo(Math.random()*stage.stageWidth>>0, Math.random()*stage.stageHeight>>0);
 			}
 			
 			private function loop(evt:Event):void
 			{
-				role.step();
-				if ( role.isUpdate )
+				var t:Number = getTimer();
+				var role:RPGRole;
+				
+				var bmp:BitmapData = (img.source as Bitmap).bitmapData;
+				bmp.lock();
+				bmp.fillRect(new Rectangle(0,0,bmp.width,bmp.height),0);
+				for ( var i:int=0; i<roleArr.length; i++ )
 				{
-					var bmp:BitmapData = (img.source as Bitmap).bitmapData
-					var pic:BitmapData = role.displayData();
-					var rect:Rectangle = role.displayRect;
-					var dest:Point = role.displayPoint;
-					if ( roleRect ) bmp.fillRect(roleRect,0);
-					bmp.copyPixels(pic, rect, dest, null, null, false); 
-					roleRect = rect.clone();
-					roleRect.x = dest.x;
-					roleRect.y = dest.y;
-					role.isUpdate = false;
+					role = roleArr[i] as RPGRole;
+					role.step();
 				}
+				roleArr.sort(roleSort);
+				for ( i=0; i<roleArr.length; i++ )
+				{
+					role = roleArr[i] as RPGRole;
+					if ( role.isUpdate )
+					{
+						var pic:BitmapData = role.displayData();
+						var rect:Rectangle = role.displayRect;
+						var dest:Point = role.displayPoint;
+						bmp.copyPixels(pic, rect, dest, null, null, true);
+						role.isUpdate = false;
+					}
+					role = null;
+				}
+				bmp.unlock();
+				trace("每帧所需要时间："+(getTimer()-t))
+			}
+			
+			private function roleSort(a:RPGRole, b:RPGRole):int
+			{
+				if ( a.y<b.y )
+				{
+					return -1;
+				}
+				else if ( a.y>b.y )
+				{
+					return 1
+				}
+				return 0;
 			}
 			
 			private function resizeHandler(evt:Event):void
@@ -82,7 +117,25 @@
 				(img.source as Bitmap).bitmapData = new BitmapData(stage.stageWidth, stage.stageHeight, true, 0);
 			}
 			
+			private function addRole():void
+			{
+				count++;
+				var role:RPGRole = new RPGRole();
+				var acts:Actions = Actions.createByXML(XML(RoleXml.data.actions));
+				role.speed = 10;
+				role.x = Math.random()*application.width>>0;
+				role.y = application.height;
+				role.source = pic;
+				role.actions = acts;
+				role.moveTo(Math.random()*application.width>>0, Math.random()*application.height>>0);
+				role.addEventListener(RoleEvent.ARRIVE_END, roleArriveHandler);
+				
+				roleArr.push(role);
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:Image id="img"/>
+	<mx:Button x="10" y="10" label="添加" click="addRole()"/>
+	<mx:Label x="66" y="12" id="showCount"/>
 </mx:Application>
