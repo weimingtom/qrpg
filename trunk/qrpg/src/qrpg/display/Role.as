@@ -6,7 +6,7 @@ package qrpg.display
 	import qrpg.action.Actions;
 	
 	/**
-	 * 角色类。
+	 * 角色类。<br/>
 	 * 该类实现角色在未加载前显示默认的形象。
 	 * @author 陈策
 	 * @version 3.0
